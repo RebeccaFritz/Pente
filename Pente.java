@@ -87,26 +87,81 @@ class Pente implements PenteInterface{
             // block capture
         } else if(computerCanCapture()){
             // make capture
+        } else if(computerHasThree()){
+            // make four
         }
     }
 
     private boolean playerCanCapture(){ // non functional
+        // check for two "O" in a row with an "X" beside it
         return false;
     }
 
     private boolean computerCanCapture(){ // non functional
+        // check for two "X" in a row with an "O" beside it
         return false;
     }
 
     private boolean computerCanWin(){ // non functional
+        // check for four "O" in a row with a free space on either side
+        int[][] four = findFourO(); // an array with the row number and column number for each 
         return false;
     }
 
+    private int[][] findFourO(){ // this is not currently checking if there is a space free beside the four
+        // [][][][] column position
+        // [][][][] row position
+        int[][] four = new int[2][4];
+        for(int i = 0; i < 19; i++){
+            for(int j = 0; j < 19; j++){
+                if(this.board[i][j].equals("O") && this.board[i][j+1].equals("O") && this.board[i][j+2].equals("O") && this.board[i][j+3].equals("O")){
+                    // horizontal set of four 
+                    four[0][0] = i;
+                    four[1][0] = j;
+                    four[0][1] = i;
+                    four[1][1] = j+1;
+                    four[0][2] = i;
+                    four[1][2] = j+2;
+                    four[0][3] = i;
+                    four[1][3] = j+3;
+                } else if(this.board[i][j].equals("O") && this.board[i+1][j].equals("O") && this.board[i+2][j].equals("O") && this.board[i+3][j].equals("O")){
+                    // vertical set of four
+                    four[0][0] = i;
+                    four[1][0] = j;
+                    four[0][1] = i+1;
+                    four[1][1] = j;
+                    four[0][2] = i+2;
+                    four[1][2] = j;
+                    four[0][3] = i+3;
+                    four[1][3] = j;
+                } else if(this.board[i][j].equals("O") && this.board[i+1][j+1].equals("O") && this.board[i+2][j+2].equals("O") && this.board[i+3][j+3].equals("O")){
+                    // diagonal set of four
+                    four[0][0] = i;
+                    four[1][0] = j;
+                    four[0][1] = i+1;
+                    four[1][1] = j+1;
+                    four[0][2] = i+2;
+                    four[1][2] = j+2;
+                    four[0][3] = i+3;
+                    four[1][3] = j+3;
+                }
+            }
+        }
+        return four;
+    }
+
     private boolean playerCanWin(){ // non functional
+        // check for four "X" in a row with a free space on one side
         return false;
     }
 
     private boolean playerHasThree(){ // non functional
+        // check for three "X" in a row with free space on both sides
+        return false;
+    }
+
+    private boolean computerHasThree(){ // non functional
+        // check for three "O" in a row with free space on both sides
         return false;
     }
 
