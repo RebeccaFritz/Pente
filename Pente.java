@@ -83,7 +83,7 @@ class Pente implements PenteInterface{
         //} else if(playerCanWin()){
             // block win
         } else if(playerHasThree()){
-            // black three
+            // block three
             this.board[this.freeSpace[0]][this.freeSpace[1]] = "O";
         //} else if(playerCanCapture()){
             // block capture
@@ -106,7 +106,7 @@ class Pente implements PenteInterface{
 
     private boolean computerCanWin(){ // non functional
         // check for four "O" in a row with a free space on one side
-        findRow(4, "O"); 
+        findRowOfN(4, "O"); 
         if(this.freeSpace[0] != 100){
             return true;
         }  else {
@@ -114,24 +114,33 @@ class Pente implements PenteInterface{
         }
     }
 
-    private void findRowOf3(String piece){ // this is not working
-        this.freeSpace[0] = 100; // placeholder value
-
-        // finding a row of 3
-        int piecesFound = 0;
+    private void findRowOfN(int n, String piece){ // this is not working
+        this.freeSpace[0] = 100;
         for(int i = 0; i < 19; i++){
-            for(int j = 0; j < 19; j++){
-                if(piecesFound == 3 && this.board[i][j] == "-"){
-                    this.freeSpace[0] = i;
-                    this.freeSpace[1] = j;
-                    break;
-                } else if(piecesFound < 3 && this.board[i][j] == piece){
-                    piecesFound++;
-                } else {
-                    piecesFound = 0;
-                }
+            if(setOfN(getRow(i), n, piece)){
+                this.freeSpace[0] = i;
+                break;
+            } 
+        }
+    }
+
+    private String[] getRow(int n){
+        return this.board[n];
+    }
+
+    private boolean setOfN(String[] row, int n, String piece){
+        int numInRow = 0;
+        for(int i = 0; i < 19; i++){
+            if(numInRow == n && row[i] == "-"){
+                freeSpace[1] = i;
+                return true;
+            } else if(row[i] == piece){
+                numInRow++;
+            } else if(row[i] != piece){
+                numInRow = 0;
             }
         }
+        return false;
     }
 
     private boolean playerCanWin(){ // non functional
@@ -141,7 +150,7 @@ class Pente implements PenteInterface{
 
     private boolean playerHasThree(){ // non functional
         // check for three "X" in a row with free space on both sides
-        findRowOf3("X"); 
+        findRowOfN(3, "X"); 
         if(this.freeSpace[0] != 100){
             return true;
         }  else {
