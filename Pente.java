@@ -7,7 +7,6 @@ class Pente implements PenteInterface{
     private int playerCaptures = 0; // how many pairs has the player captured
     private String[] columnLabels = {"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s"};
     private Random random = new Random();
-    private int[][] piecePositions;
     private int[] freeSpace = new int[2]; // holds the row and column number of the free space
 
 // Methods
@@ -108,119 +107,28 @@ class Pente implements PenteInterface{
     private boolean computerCanWin(){ // non functional
         // check for four "O" in a row with a free space on one side
         findRow(4, "O"); 
-        if(this.piecePositions[0][0] != 100){
+        if(this.freeSpace[0] != 100){
             return true;
         }  else {
             return false;
         }
     }
 
-    private void findRow(int n, String piece){ // this is not currently checking if there is a space free beside the four
-        // the piecePositions array looks as follows for n = 4
-        // [][][][] column position
-        // [][][][] row position
-        this.piecePositions = new int[2][n];
+    private void findRowOf3(String piece){ // this is not working
+        this.freeSpace[0] = 100; // placeholder value
 
-        String opposingPiece;
-        if(piece == "X"){
-            opposingPiece = "O";
-        } else {
-            opposingPiece = "X";
-        }
-
+        // finding a row of 3
+        int piecesFound = 0;
         for(int i = 0; i < 19; i++){
-            for(int j = 0; j < 16; j++){
-                if(j > 0){
-                    if(this.board[i][j] == piece){ 
-                        this.piecePositions[0][0] = j;
-                        this.piecePositions[1][0] = i;
-                    // if we have two in a row and are looking for two in a row, check if there is a free space to the left
-                    } else if(this.board[i][j+1] == piece && n == 2 && this.board[i][j-1] != opposingPiece){
-                        this.piecePositions[0][1] = j+1;
-                        this.piecePositions[1][1] = i;
-                        this.freeSpace[0] = i;
-                        this.freeSpace[1] = j-1;
-                        break;
-                    // if we have two in a row and are looking for two in a row, check if there is a free space to the right
-                    } else if(this.board[i][j+1] == piece && n == 2 && this.board[i][j+2] != opposingPiece){
-                        this.piecePositions[0][1] = j+1;
-                        this.piecePositions[1][1] = i;
-                        this.freeSpace[0] = i;
-                        this.freeSpace[1] = j+2;
-                        break;
-                    } else if(this.board[i][j+1] == piece){
-                        this.piecePositions[0][1] = j+1;
-                        this.piecePositions[1][1] = i;
-                    // if we have three in a row and are looking for three in a row, check if there is a free space to the left
-                    } else if(this.board[i][j+2] == piece && n == 3 && this.board[i][j-1] != opposingPiece){ //  !this.board[i][j+3].equals(opposingPiece)
-                        this.piecePositions[0][2] = j+2;
-                        this.piecePositions[1][2] = i;
-                        this.freeSpace[0] = i;
-                        this.freeSpace[1] = j-1;
-                        break;
-                    // if we have three in a row and are looking for three in a row, check if there is a free space to the right
-                    } else if(this.board[i][j+2] == piece && n == 3 && this.board[i][j+3] != opposingPiece){
-                        this.piecePositions[0][2] = j+2;
-                        this.piecePositions[1][2] = i;
-                        this.freeSpace[0] = i;
-                        this.freeSpace[1] = j+3;
-                        break;
-                    } else if(this.board[i][j+2] == piece){
-                        this.piecePositions[0][2] = j+2;
-                        this.piecePositions[1][2] = i;
-                    // if we have four in a row and are looking for four in a row, check if there is a free space to the left
-                    } else if(this.board[i][j+3] == piece && n == 4 && this.board[i][j-1] != opposingPiece){ // !this.board[i][j+4].equals(opposingPiece)
-                        this.piecePositions[0][3] = j+3;
-                        this.piecePositions[1][3] = i;
-                        this.freeSpace[0] = i;
-                        this.freeSpace[1] = j-1;
-                        break;
-                    // if we have four in a row and are looking for four in a row, check if there is a free space to the right
-                    } else if(this.board[i][j+3] == piece && n == 4 && this.board[i][j+4] != opposingPiece){
-                        this.piecePositions[0][3] = j+3;
-                        this.piecePositions[1][3] = i;
-                        this.freeSpace[0] = i;
-                        this.freeSpace[1] = j+4;
-                        break;
-                    } else {
-                        // impossible postion value to indicate there are no rows of length n
-                        this.piecePositions[0][0] = 100;
-                    }
+            for(int j = 0; j < 19; j++){
+                if(piecesFound == 3 && this.board[i][j] == "-"){
+                    this.freeSpace[0] = i;
+                    this.freeSpace[1] = j;
+                    break;
+                } else if(piecesFound < 3 && this.board[i][j] == piece){
+                    piecesFound++;
                 } else {
-                    if(this.board[i][j] == piece){ 
-                        this.piecePositions[0][0] = j;
-                        this.piecePositions[1][0] = i;
-                    // if we have two in a row and are looking for two in a row, check if there is a free space to the right
-                    } else if(this.board[i][j+1] == piece && n == 2 && this.board[i][j+2] != opposingPiece){
-                        this.piecePositions[0][1] = j+1;
-                        this.piecePositions[1][1] = i;
-                        this.freeSpace[0] = i;
-                        this.freeSpace[1] = j+2;
-                        break;
-                    } else if(this.board[i][j+1] == piece){
-                        this.piecePositions[0][1] = j+1;
-                        this.piecePositions[1][1] = i;
-                    // if we have 3 in a row and are looking for 3 in a row, check if there is a free space to the right
-                    } else if(this.board[i][j+2] == piece && n == 3 && this.board[i][j+3] != opposingPiece){
-                        this.piecePositions[0][2] = j+2;
-                        this.piecePositions[1][2] = i;
-                        this.freeSpace[0] = i;
-                        this.freeSpace[1] = j+3;
-                        break;
-                    } else if(this.board[i][j+2] == piece){
-                        this.piecePositions[0][2] = j+2;
-                        this.piecePositions[1][2] = i;
-                    // if we have 4 in a row and are looking for 4 in a row, check if there is a space to the right
-                    } else if(this.board[i][j+2] == piece && n == 4 && this.board[i][j+4] != opposingPiece){
-                        this.piecePositions[0][3] = j+2;
-                        this.piecePositions[1][3] = i;
-                        this.freeSpace[0] = i;
-                        this.freeSpace[1] = j+4;
-                        break;
-                    } else {
-                        // impossible postion value to indicate there are no rows of length n
-                        this.piecePositions[0][0] = 100; 
-                    }
+                    piecesFound = 0;
                 }
             }
         }
@@ -233,8 +141,8 @@ class Pente implements PenteInterface{
 
     private boolean playerHasThree(){ // non functional
         // check for three "X" in a row with free space on both sides
-        findRow(3, "X"); 
-        if(this.piecePositions[0][0] != 100){
+        findRowOf3("X"); 
+        if(this.freeSpace[0] != 100){
             return true;
         }  else {
             return false;
