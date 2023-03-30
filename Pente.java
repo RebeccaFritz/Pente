@@ -7,7 +7,7 @@ class Pente implements PenteInterface{
     private int playerCaptures = 0; // how many pairs has the player captured
     private String[] columnLabels = {"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s"};
     private Random random = new Random();
-    private int[] freeSpace = new int[2]; // holds the row and column number of the free space
+    private int[] freeSpace = new int[2]; 
 
 // Methods
     public void startBoard(){
@@ -61,8 +61,14 @@ class Pente implements PenteInterface{
         }
     }
 
-    public String checkWin(){
-        return "continue";
+    public String checkWin(){ // this does not check for column wins, diagonal wins, or capture wins
+        if(findRowOfN(5, "O")){
+            return "computer";
+        } else if(findRowOfN(5, "X")){
+            return "player";
+        } else { 
+            return "continue";
+        }
     }
 
     public void computerMove(int round){
@@ -114,25 +120,33 @@ class Pente implements PenteInterface{
         }
     }
 
-    private void findRowOfN(int n, String piece){ // this is not working
+    private boolean findRowOfN(int n, String piece){ // this is not working
         this.freeSpace[0] = 100;
         for(int i = 0; i < 19; i++){
-            if(setOfN(getRow(i), n, piece)){
+            if(rowOfN(getRow(i), n, piece)){
                 this.freeSpace[0] = i;
-                break;
+                return true;
             } 
         }
+
+        return false;
     }
 
     private String[] getRow(int n){
         return this.board[n];
     }
 
-    private boolean setOfN(String[] row, int n, String piece){
+    private boolean rowOfN(String[] row, int n, String piece){
         int numInRow = 0;
-        for(int i = 0; i < 19; i++){
-            if(numInRow == n && row[i] == "-"){
-                freeSpace[1] = i;
+        for(int i = 1; i < 19; i++){
+            if(n == 5 && numInRow == n){
+                return true;
+            } else if(n != 5 && numInRow == n && row[i] == "-" && row[i-(n+1)] == "-"){
+                if(random.nextInt(2) == 0){
+                    this.freeSpace[1] = i;
+                } else {
+                    this.freeSpace[1] = i-(n+1);
+                }
                 return true;
             } else if(row[i] == piece){
                 numInRow++;
