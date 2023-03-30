@@ -7,9 +7,9 @@ class Pente implements PenteInterface{
     private int playerCaptures = 0; // how many pairs has the player captured
     private String[] columnLabels = {"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s"};
     private Random random = new Random();
-    private int[] freeSpace = new int[2]; 
+    private int[] freeSpace = new int[2]; // {row, column}
 
-// Methods
+// Public Methods
     public void startBoard(){
         // filling the board with the placeholder "-"
         for(int i = 0; i < 19; i++){
@@ -85,6 +85,7 @@ class Pente implements PenteInterface{
             }
             this.board[rowPick][columnPick] = "O";
         } else if(computerCanWin()){
+            // take win
             this.board[this.freeSpace[0]][this.freeSpace[1]] = "O";
         } else if(playerCanWin()){
             // block win
@@ -92,9 +93,9 @@ class Pente implements PenteInterface{
         } else if(playerHasThree()){
             // block three
             this.board[this.freeSpace[0]][this.freeSpace[1]] = "O";
-        //} else if(playerCanCapture()){
+        } else if(playerCanCapture()){
             // block capture
-        //} else if(computerCanCapture()){
+        } else if(computerCanCapture()){
             // make capture
         } else if(computerHasThree()){
             // make four
@@ -102,27 +103,69 @@ class Pente implements PenteInterface{
         }
     }
 
-    private boolean playerCanCapture(){ // non functional
+    public boolean playerMove(String columnLetter, int row){
+        // determine the row
+        int column = 0;
+        for(int i = 0; i < 19; i++){
+            if(columnLabels[i].equals(columnLetter)) column = i;
+        }
+
+        if(this.board[row-1][column].equals("X") || this.board[row-1][column].equals("O")){
+            return false;
+        } else {
+            this.board[row-1][column] = "X";
+            return true;
+        }
+    }
+
+// Private methods 
+    private boolean playerCanCapture(){ 
         // check for two "O" in a row with an "X" beside it
         return false;
     }
 
-    private boolean computerCanCapture(){ // non functional
+    private boolean computerCanCapture(){ 
         // check for two "X" in a row with an "O" beside it
         return false;
     }
 
-    private boolean computerCanWin(){ // non functional
+    private boolean computerCanWin(){ 
         // check for four "O" in a row with a free space on one side
-        findRowOfN(4, "O"); 
-        if(this.freeSpace[0] != 100){
+        return findRowOfN(4, "O"); 
+    }
+
+    private boolean playerCanWin(){ // non functional
+        // check for four "X" in a row with a free space on one side
+        if(findRowOfN(4, "X")){
             return true;
-        }  else {
+        } else if(findColumnOfN(4, "X")){
+            return true;
+        //} else if(findDiagonalOfN(4, "X")){
+        //    return true;
+        } else {
             return false;
         }
     }
 
-    private boolean findRowOfN(int n, String piece){ // this is not working
+    private boolean playerHasThree(){ // non functional
+        // check for three "X" in a row with free space on both sides
+        if(findRowOfN(3, "X")){
+            return true;
+        } else if(findColumnOfN(3, "X")){
+            return true;
+        //} else if(findDiagonalOfN(3, "X")){
+        //    return true;
+        } else {
+            return false;
+        }
+    }
+
+    private boolean computerHasThree(){ // non functional
+        // check for three "O" in a row with free space on both sides
+        return findRowOfN(3, "O"); 
+    }
+
+    private boolean findRowOfN(int n, String piece){
         this.freeSpace[0] = 100;
         for(int i = 0; i < 19; i++){
             if(rowOfN(getRow(i), n, piece)){
@@ -141,19 +184,19 @@ class Pente implements PenteInterface{
     private boolean rowOfN(String[] row, int n, String piece){
         int numInRow = 0;
         for(int i = 1; i < 19; i++){
-            if(n == 5 && numInRow == n){
+            if(n == 5 && numInRow == n){ // win condition
                 return true;
-            } else if(n != 5 && numInRow == n && row[i] == "-" && row[i-(n+1)] == "-"){
+            } else if(n != 5 && numInRow == n && row[i] == "-" && row[i-(n+1)] == "-"){ // n in a row with a free space on both sides
                 if(random.nextInt(2) == 0){
                     this.freeSpace[1] = i;
                 } else {
                     this.freeSpace[1] = i-(n+1);
                 }
                 return true;
-            } else if(n == 4 && numInRow == n && row[i] == "-"){
+            } else if(n == 4 && numInRow == n && row[i] == "-"){ // four in a row with a free space to the right
                 this.freeSpace[1] = i;
                 return true;
-            } else if(n == 4 && numInRow == n && row[i-(n+1)] == "-"){
+            } else if(n == 4 && numInRow == n && row[i-(n+1)] == "-"){ // four in a row with a free space to the left
                 this.freeSpace[1] = i-(n+1);
                 return true;
             }  else if(row[i] == piece){
@@ -165,33 +208,49 @@ class Pente implements PenteInterface{
         return false;
     }
 
-    private boolean playerCanWin(){ // non functional
-        // check for four "X" in a row with a free space on one side
-        return findRowOfN(4, "X"); 
-    }
-
-    private boolean playerHasThree(){ // non functional
-        // check for three "X" in a row with free space on both sides
-        return findRowOfN(3, "X"); 
-    }
-
-    private boolean computerHasThree(){ // non functional
-        // check for three "O" in a row with free space on both sides
-        return findRowOfN(3, "O"); 
-    }
-
-    public boolean playerMove(String columnLetter, int row){
-        // determine the row
-        int column = 0;
+    private boolean findColumnOfN(int n, String piece){ 
+        this.freeSpace[0] = 100;
         for(int i = 0; i < 19; i++){
-            if(columnLabels[i].equals(columnLetter)) column = i;
+            if(columnOfN(getColumn(i), n, piece)){
+                this.freeSpace[1] = i;
+                return true;
+            } 
         }
 
-        if(this.board[row-1][column].equals("X") || this.board[row-1][column].equals("O")){
-            return false;
-        } else {
-            this.board[row-1][column] = "X";
-            return true;
-        }
+        return false;
     }
-}
+
+    private String[] getColumn(int n){
+        String[] column = new String[19];
+        for(int i = 0; i < 19; i++){
+            column[i] = this.board[i][n];
+        }
+        return column;
+    }
+
+    private boolean columnOfN(String[] column, int n, String piece){
+        int numInColumn = 0;
+        for(int i = 1; i < 19; i++){
+            if(n == 5 && numInColumn == n){ // win condition
+                return true;
+            } else if(n != 5 && numInColumn == n && column[i] == "-" && column[i-(n+1)] == "-"){ // n in a column with a free space on both sides
+                if(random.nextInt(2) == 0){
+                    this.freeSpace[0] = i;
+                } else {
+                    this.freeSpace[0] = i-(n+1);
+                }
+                return true;
+            } else if(n == 4 && numInColumn == n && column[i] == "-"){ // 4 in a column with a free space on the bottom
+                this.freeSpace[0] = i;
+                return true;
+            } else if(n == 4 && numInColumn == n && column[i-(n+1)] == "-"){ // 4 in a column with a free space on the top
+                this.freeSpace[0] = i-(n+1);
+                return true;
+            }  else if(column[i] == piece){
+                numInColumn++;
+            } else if(column[i] != piece){
+                numInColumn = 0;
+            }
+        }
+        return false;
+    }
