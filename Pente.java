@@ -8,6 +8,8 @@ class Pente implements PenteInterface{
     private String[] columnLabels = {"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s"};
     private Random random = new Random();
     private int[] freeSpace = new int[2]; // {row, column}
+    private int[] captivePieceOne = new int[2]; // {row, column}
+    private int[] captivePieceTwo = new int[2]; // {row, column}
 
 // Public Methods
     public void startBoard(){
@@ -61,10 +63,10 @@ class Pente implements PenteInterface{
         }
     }
 
-    public String checkWin(){ // this does not check for column wins, diagonal wins, or capture wins
-        if(findRowOfN(5, "O")){
+    public String checkWin(){ // this does not check for diagonal wins or capture wins
+        if(findRowOfN(5, "O") || findColumnOfN(5, "O") || computerCaptures == 5){
             return "computer";
-        } else if(findRowOfN(5, "X")){
+        } else if(findRowOfN(5, "X") || findColumnOfN(5, "X") || playerCaptures == 5){
             return "player";
         } else { 
             return "continue";
@@ -95,8 +97,13 @@ class Pente implements PenteInterface{
             this.board[this.freeSpace[0]][this.freeSpace[1]] = "O";
         } else if(playerCanCapture()){
             // block capture
+            this.board[this.freeSpace[0]][this.freeSpace[1]] = "O";
         } else if(computerCanCapture()){
             // make capture
+            this.board[this.freeSpace[0]][this.freeSpace[1]] = "O";
+            this.board[this.captivePieceOne[0]][this.captivePieceOne[1]] = "-";
+            this.board[this.captivePieceTwo[0]][this.captivePieceTwo[1]] = "-";
+            computerCaptures++;
         } else if(computerHasThree()){
             // make four
             this.board[this.freeSpace[0]][this.freeSpace[1]] = "O";
@@ -110,6 +117,8 @@ class Pente implements PenteInterface{
             if(columnLabels[i].equals(columnLetter)) column = i;
         }
 
+        //checkForCapture(row-1, column);
+
         if(this.board[row-1][column].equals("X") || this.board[row-1][column].equals("O")){
             return false;
         } else {
@@ -121,12 +130,23 @@ class Pente implements PenteInterface{
 // Private methods 
     private boolean playerCanCapture(){ 
         // check for two "O" in a row with an "X" beside it
+        if(findRowOfN(2, "O")){
+            return true;
+        }
         return false;
     }
 
     private boolean computerCanCapture(){ 
         // check for two "X" in a row with an "O" beside it
-        return false;
+        if(findRowOfN(2, "X")){
+            return true;
+        }else if(findColumnOfN(2, "X")){
+            return true;
+        //} else if(findDiagonalOfN(2, "X")){
+        //    return true;
+        } else {
+            return false;
+        }
     }
 
     private boolean computerCanWin(){ 
@@ -170,6 +190,8 @@ class Pente implements PenteInterface{
         for(int i = 0; i < 19; i++){
             if(rowOfN(getRow(i), n, piece)){
                 this.freeSpace[0] = i;
+                this.captivePieceOne[0] = i;
+                this.captivePieceTwo[0] = i;
                 return true;
             } 
         }
@@ -182,11 +204,18 @@ class Pente implements PenteInterface{
     }
 
     private boolean rowOfN(String[] row, int n, String piece){
+        String opposingPiece;
+        if(piece == "X"){
+            opposingPiece = "O";
+        } else {
+            opposingPiece = "X";
+        }
+
         int numInRow = 0;
         for(int i = 1; i < 19; i++){
             if(n == 5 && numInRow == n){ // win condition
                 return true;
-            } else if(n != 5 && numInRow == n && row[i] == "-" && row[i-(n+1)] == "-"){ // n in a row with a free space on both sides
+            } else if(n == 3 && numInRow == n && row[i] == "-" && row[i-(n+1)] == "-"){ // 3 in a row with a free space on both sides
                 if(random.nextInt(2) == 0){
                     this.freeSpace[1] = i;
                 } else {
@@ -199,7 +228,17 @@ class Pente implements PenteInterface{
             } else if(n == 4 && numInRow == n && row[i-(n+1)] == "-"){ // four in a row with a free space to the left
                 this.freeSpace[1] = i-(n+1);
                 return true;
-            }  else if(row[i] == piece){
+            }  else if(n == 2 && numInRow == n && row[i] == "-" && row[i-(n+1)] == opposingPiece){ // two in a row with a free space to the right and the opposing peice to the left
+                this.freeSpace[1] = i;
+                this.captivePieceOne[1] = i-1;
+                this.captivePieceTwo[1] = i-2;
+                return true;
+            } else if(n == 2 && numInRow == n && row[i] == opposingPiece && row[i-(n+1)] == "-"){ // two in a row with the opposing peice to the right and a free space to the left
+                this.freeSpace[1] = i-(n+1);
+                this.captivePieceOne[1] = i-1;
+                this.captivePieceTwo[1] = i-2;
+                return true;
+            } else if(row[i] == piece){
                 numInRow++;
             } else if(row[i] != piece){
                 numInRow = 0;
@@ -213,6 +252,8 @@ class Pente implements PenteInterface{
         for(int i = 0; i < 19; i++){
             if(columnOfN(getColumn(i), n, piece)){
                 this.freeSpace[1] = i;
+                this.captivePieceOne[1] = i;
+                this.captivePieceTwo[1] = i;
                 return true;
             } 
         }
@@ -229,11 +270,18 @@ class Pente implements PenteInterface{
     }
 
     private boolean columnOfN(String[] column, int n, String piece){
+        String opposingPiece;
+        if(piece == "X"){
+            opposingPiece = "O";
+        } else {
+            opposingPiece = "X";
+        }
+
         int numInColumn = 0;
         for(int i = 1; i < 19; i++){
             if(n == 5 && numInColumn == n){ // win condition
                 return true;
-            } else if(n != 5 && numInColumn == n && column[i] == "-" && column[i-(n+1)] == "-"){ // n in a column with a free space on both sides
+            } else if(n == 3 && numInColumn == n && column[i] == "-" && column[i-(n+1)] == "-"){ // 3 in a column with a free space on both sides
                 if(random.nextInt(2) == 0){
                     this.freeSpace[0] = i;
                 } else {
@@ -246,6 +294,16 @@ class Pente implements PenteInterface{
             } else if(n == 4 && numInColumn == n && column[i-(n+1)] == "-"){ // 4 in a column with a free space on the top
                 this.freeSpace[0] = i-(n+1);
                 return true;
+            }  else if(n == 2 && numInColumn == n && column[i] == "-" && column[i-(n+1)] == opposingPiece){ // two in a column with a free space on the bottom and the opposing peice on top
+                this.freeSpace[0] = i;
+                this.captivePieceOne[0] = i-1;
+                this.captivePieceTwo[0] = i-2;
+                return true;
+            } else if(n == 2 && numInColumn == n && column[i] == opposingPiece && column[i-(n+1)] == "-"){ // two in a column with the opposing peice on the bottom and a free space on top
+                this.freeSpace[0] = i-(n+1);
+                this.captivePieceOne[0] = i-1;
+                this.captivePieceTwo[0] = i-2;
+                return true;
             }  else if(column[i] == piece){
                 numInColumn++;
             } else if(column[i] != piece){
@@ -254,3 +312,4 @@ class Pente implements PenteInterface{
         }
         return false;
     }
+}
