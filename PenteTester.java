@@ -37,6 +37,12 @@ class PenteTester {
 
                 round++;
             }
+
+            if(game.checkWin() == "player"){
+                System.out.println("Congrats! You won!");
+            } else if(game.checkWin() == "computer"){
+                System.out.println("Oh no. The computer won.");
+            }
         }
     }
 }
