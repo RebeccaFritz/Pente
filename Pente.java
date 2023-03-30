@@ -84,10 +84,11 @@ class Pente implements PenteInterface{
                 columnPick = columnOptions[random.nextInt(columnOptions.length)];
             }
             this.board[rowPick][columnPick] = "O";
-        //} else if(computerCanWin()){
-        //    this.board[this.freeSpace[0]][this.freeSpace[1]] = "O";
-        //} else if(playerCanWin()){
+        } else if(computerCanWin()){
+            this.board[this.freeSpace[0]][this.freeSpace[1]] = "O";
+        } else if(playerCanWin()){
             // block win
+            this.board[this.freeSpace[0]][this.freeSpace[1]] = "O";
         } else if(playerHasThree()){
             // block three
             this.board[this.freeSpace[0]][this.freeSpace[1]] = "O";
@@ -95,8 +96,9 @@ class Pente implements PenteInterface{
             // block capture
         //} else if(computerCanCapture()){
             // make capture
-        //} else if(computerHasThree()){
+        } else if(computerHasThree()){
             // make four
+            this.board[this.freeSpace[0]][this.freeSpace[1]] = "O";
         }
     }
 
@@ -148,7 +150,13 @@ class Pente implements PenteInterface{
                     this.freeSpace[1] = i-(n+1);
                 }
                 return true;
-            } else if(row[i] == piece){
+            } else if(n == 4 && numInRow == n && row[i] == "-"){
+                this.freeSpace[1] = i;
+                return true;
+            } else if(n == 4 && numInRow == n && row[i-(n+1)] == "-"){
+                this.freeSpace[1] = i-(n+1);
+                return true;
+            }  else if(row[i] == piece){
                 numInRow++;
             } else if(row[i] != piece){
                 numInRow = 0;
@@ -159,22 +167,17 @@ class Pente implements PenteInterface{
 
     private boolean playerCanWin(){ // non functional
         // check for four "X" in a row with a free space on one side
-        return false;
+        return findRowOfN(4, "X"); 
     }
 
     private boolean playerHasThree(){ // non functional
         // check for three "X" in a row with free space on both sides
-        findRowOfN(3, "X"); 
-        if(this.freeSpace[0] != 100){
-            return true;
-        }  else {
-            return false;
-        }
+        return findRowOfN(3, "X"); 
     }
 
     private boolean computerHasThree(){ // non functional
         // check for three "O" in a row with free space on both sides
-        return false;
+        return findRowOfN(3, "O"); 
     }
 
     public boolean playerMove(String columnLetter, int row){
