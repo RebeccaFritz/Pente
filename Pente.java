@@ -113,7 +113,7 @@ class Pente implements PenteInterface{
             this.board[this.freeSpace[0]][this.freeSpace[1]] = "O";
         //} else {
             // place random piece, but make sure the spot is empty
-        //}
+        }
     }
 
     public boolean playerMove(String columnLetter, int row){
