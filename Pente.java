@@ -78,13 +78,12 @@ class Pente implements PenteInterface{
         if(round == 1){
             this.board[9][9] = "O";
         } else if(round == 2){
-            int[] rowOptions = {7,8,9,10,11};
-            int[] columnOptions = {7,8,9,10,11};
-            int rowPick = rowOptions[random.nextInt(rowOptions.length)];
-            int columnPick = columnOptions[random.nextInt(columnOptions.length)];
+            int[][] moveOptions = {{7,7},{7,9},{7,11},{8,8},{8,9},{8,10},{9,7},{9,8},{9,10},{9,11},{10,8},{10,9},{10,10},{11,7},{11,9},{11,11}};
+            int rowPick = moveOptions[random.nextInt(moveOptions.length)][0];
+            int columnPick = moveOptions[random.nextInt(moveOptions.length)][1];
             while(this.board[rowPick][columnPick].equals("X")){
-                rowPick = rowOptions[random.nextInt(rowOptions.length)];
-                columnPick = columnOptions[random.nextInt(columnOptions.length)];
+                rowPick = moveOptions[random.nextInt(moveOptions.length)][0];
+                columnPick = moveOptions[random.nextInt(moveOptions.length)][1];
             }
             this.board[rowPick][columnPick] = "O";
         } else if(computerCanWin()){
@@ -111,10 +110,15 @@ class Pente implements PenteInterface{
         } else if (computerHasTwo()){
             // make three
             this.board[this.freeSpace[0]][this.freeSpace[1]] = "O";
+        } else {
+            int randomRow = random.nextInt(19);
+            int randomColumn = random.nextInt(19);
+            while(this.board[randomRow][randomColumn].equals("X") || this.board[randomRow][randomColumn].equals("O")){
+                randomRow = random.nextInt(19);
+                randomColumn = random.nextInt(19);
+            } 
+            this.board[randomRow][randomColumn] = "O";
         }
-        //} else {
-            // place random piece, but make sure the spot is empty
-        //}
     }
 
     public boolean playerMove(String columnLetter, int row){
@@ -124,7 +128,7 @@ class Pente implements PenteInterface{
             if(columnLabels[i].equals(columnLetter)) column = i;
         }
 
-        //checkIfPlayerCaptured(row-1, column);
+        checkIfPlayerCaptured();
 
         if(this.board[row-1][column].equals("X") || this.board[row-1][column].equals("O")){
             return false;
@@ -135,6 +139,13 @@ class Pente implements PenteInterface{
     }
 
 // Private methods 
+    private void checkIfPlayerCaptured(){
+        if(playerCanCapture()){
+            this.board[captivePieceOne[0]][captivePieceOne[1]] = "-";
+            this.board[captivePieceTwo[0]][captivePieceTwo[1]] = "-";
+            this.playerCaptures++;
+        }
+    }
     private boolean playerCanCapture(){ 
         // check for two "O" in a row with an "X" beside it
         if(findRowOfN(2, "O")){
