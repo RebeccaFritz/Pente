@@ -65,9 +65,9 @@ class Pente implements PenteInterface{
     }
 
     public String checkWin(){ // this does not check for diagonal wins
-        if(findRowOfN(5, "O") || findColumnOfN(5, "O") || computerCaptures == 5){
+        if(findRowOfN(5, "O") || findColumnOfN(5, "O") || findDiagonalDownOfN(5, "O") || findDiagonalUpOfN(5, "O") || computerCaptures == 5){
             return "computer";
-        } else if(findRowOfN(5, "X") || findColumnOfN(5, "X") || playerCaptures == 5){
+        } else if(findRowOfN(5, "X") || findColumnOfN(5, "X") || findDiagonalDownOfN(5, "X") || findDiagonalUpOfN(5, "X") ||playerCaptures == 5){
             return "player";
         } else { 
             return "continue";
@@ -148,8 +148,8 @@ class Pente implements PenteInterface{
             return true;
         } else if(findDiagonalDownOfN(2, "X")){
             return true;
-        //} else if(findDiagonalUpOfN(4, "X")){
-        //    return true;
+        } else if(findDiagonalUpOfN(4, "X")){
+            return true;
         } else {
             return false;
         }
@@ -168,8 +168,8 @@ class Pente implements PenteInterface{
             return true;
         } else if(findDiagonalDownOfN(4, "X")){
             return true;
-        //} else if(findDiagonalUpOfN(4, "X")){
-        //    return true;
+        } else if(findDiagonalUpOfN(4, "X")){
+            return true;
         } else {
             return false;
         }
@@ -183,8 +183,8 @@ class Pente implements PenteInterface{
             return true;
         } else if(findDiagonalDownOfN(3, "X")){
             return true;
-        //} else if(findDiagonalUpOfN(3, "X")){
-        //    return true;
+        } else if(findDiagonalUpOfN(3, "X")){
+            return true;
         } else {
             return false;
         }
@@ -345,26 +345,26 @@ class Pente implements PenteInterface{
 
     // the downward diagonals are numbered in the following way
     // diagonals with less than 5 spots are not counted
-    //    15 16 17 18 19 20 21 22 23 24 25 26 27 28
-    // 14 -  -  -  -  -  -  -  -  -  -  -  -  -  -  -    
-    // 13 -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  
-    // 12 -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  
-    // 11 -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  
+    // 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28
+    // 13 -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -    
+    // 12 -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  
+    // 11 -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  
     // 10 -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
-    // 9
-    // 8
-    // 7
-    // 6
-    // 5
-    // 4
-    // 3
-    // 2
-    // 1
-    // 0  -
-    //    -  -  
-    //    -  -  -
-    //    -  -  -  -
-    //    -  -  -  -  -
+    // 9  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+    // 8  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+    // 7  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+    // 6  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+    // 5  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+    // 4  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+    // 3  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+    // 2  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+    // 1  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+    // 0  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+    //    -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+    //    -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  
+    //    -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+    //    -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+    //    -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 
     private String[] getDiagonalDown(int n){
         String[] diagonalDown;
@@ -437,6 +437,131 @@ class Pente implements PenteInterface{
                 this.captivePieceOne[0] = rowIdx+i-1;
                 this.captivePieceOne[1] = columnIdx+i-1;
                 this.captivePieceTwo[0] = rowIdx+i-2;
+                this.captivePieceTwo[1] = columnIdx+i-2;
+                return true;
+            }  else if(diagonal[i] == piece){
+                numInDiagonal++;
+            } else if(diagonal[i] != piece){
+                numInDiagonal = 0;
+            }
+        }
+        return false;
+    }
+
+    private boolean findDiagonalUpOfN(int n, String piece){ 
+        this.freeSpace[0] = 100;
+        for(int i = 0; i <= 28; i++){ // there are 28 possible diagonals of 5 or more
+            int rowIdx;
+            int columnIdx;
+            if(i <= 14){
+                rowIdx = i+4;
+                columnIdx = 0;
+            } else {
+                rowIdx = 18;
+                columnIdx = i-14;
+            }
+            if(diagonalUpOfN(getDiagonalUp(i), n, piece, rowIdx, columnIdx)){
+                return true;
+            } 
+        }
+
+        return false;
+    }
+
+    // the upwards diagonals are numbered in the following way
+    // diagonals with less than 5 spots are not counted
+    //                0  1  2  3  4  5  6  7  8  9 10 11 12 13 14
+    // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - 15
+    // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - 16
+    // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - 17
+    // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - 18
+    // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - 19  
+    // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - 20
+    // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - 21
+    // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - 22
+    // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - 23
+    // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - 24
+    // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - 25
+    // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - 26
+    // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - 27
+    // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - 28
+    // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - 
+    // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - 
+    // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+    // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+    // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  
+
+    private String[] getDiagonalUp(int n){ 
+        String[] diagonalUp;
+        if(n <= 14){
+            diagonalUp = new String[n+5];
+            int i = n+4;
+            int j = 0;
+            int h = 0;
+            while(h < n+5){
+                diagonalUp[h] = this.board[i][j];
+                j++;
+                i--;
+                h++;
+            }
+        } else {
+            diagonalUp = new String[28-n+5];
+            int i = 18;
+            int j = n-14;
+            int h = 0;
+            while(h < 28-n+5){
+                diagonalUp[h] = this.board[i][j];
+                j++;
+                i--;
+                h++;
+            }
+        } 
+        return diagonalUp;
+    }
+
+    private boolean diagonalUpOfN(String[] diagonal, int n, String piece, int rowIdx, int columnIdx){ 
+        String opposingPiece;
+        if(piece == "X"){
+            opposingPiece = "O";
+        } else {
+            opposingPiece = "X";
+        }
+
+        int numInDiagonal = 0;
+        for(int i = 1; i < diagonal.length; i++){
+            if(n == 5 && numInDiagonal == n){ // win condition
+                return true;
+            } else if(n == 3 && numInDiagonal == n && diagonal[i] == "-" && diagonal[i-4] == "-"){ // 3 in a upward diagonal with a free space on both sides
+                if(random.nextInt(2) == 0){
+                    this.freeSpace[0] = rowIdx-i;
+                    this.freeSpace[1] = columnIdx+i;
+                } else {
+                    this.freeSpace[0] = rowIdx-i+4;
+                    this.freeSpace[1] = columnIdx+i-4;
+                }
+                return true;
+            } else if(n == 4 && numInDiagonal == n && diagonal[i] == "-"){ // 4 in a upward diagonal with a free space on the bottom left
+                this.freeSpace[0] = rowIdx-i;
+                this.freeSpace[1] = columnIdx+i;
+                return true;
+            } else if(n == 4 && numInDiagonal == n && diagonal[i-5] == "-"){ // 4 in a upward diagonal with a free space on the top right
+                this.freeSpace[0] = rowIdx-i+5;
+                this.freeSpace[1] = columnIdx+i-5;
+                return true;
+            }  else if(n == 2 && numInDiagonal == n && diagonal[i] == "-" && diagonal[i-3] == opposingPiece){ // two in a upward diagonal with a free space on the bottom left and the opposing peice on top right
+                this.freeSpace[0] = rowIdx-i;
+                this.freeSpace[1] = columnIdx+i;
+                this.captivePieceOne[0] = rowIdx-i+1;
+                this.captivePieceOne[1] = columnIdx+i-1;
+                this.captivePieceTwo[0] = rowIdx-i+2;
+                this.captivePieceTwo[1] = columnIdx+i-2;
+                return true;
+            } else if(n == 2 && numInDiagonal == n && diagonal[i] == opposingPiece && diagonal[i-3] == "-"){ // two in a upward diagonal with the opposing peice on the bottom left and a free space on top right
+                this.freeSpace[0] = rowIdx-i+3;
+                this.freeSpace[1] = columnIdx+i-3;
+                this.captivePieceOne[0] = rowIdx-i+1;
+                this.captivePieceOne[1] = columnIdx+i-1;
+                this.captivePieceTwo[0] = rowIdx-i+2;
                 this.captivePieceTwo[1] = columnIdx+i-2;
                 return true;
             }  else if(diagonal[i] == piece){
