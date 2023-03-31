@@ -3,8 +3,8 @@ import java.util.Random;
 class Pente implements PenteInterface{
 
     private String[][] board = new String[19][19];
-    private int computerCaptures = 0; // how many pairs has the computer captured 
-    private int playerCaptures = 0; // how many pairs has the player captured
+    public int computerCaptures = 0; // how many pairs has the computer captured 
+    public int playerCaptures = 0; // how many pairs has the player captured
     private String[] columnLabels = {"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s"};
     private Random random = new Random();
     private int[] freeSpace = new int[2]; // {row, column}
@@ -23,6 +23,7 @@ class Pente implements PenteInterface{
 
     public void printBoard(){
         // printing column labels
+        System.out.println("");
         System.out.println("   a b c d e f g h i j k l m n o p q r s");
 
         for(int i = 0; i < 19; i++){
