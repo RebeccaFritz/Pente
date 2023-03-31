@@ -20,7 +20,9 @@ class PenteTester {
                 game.computerMove(round);
                 game.printBoard();
                 System.out.println();
-
+                
+                System.out.println("You have captured " + game.playerCaptures + " of the computer's sets.");
+                System.out.println("The computer has captured " + game.computerCaptures + " of your sets.");
                 System.out.println("The computer just went. Now it is your turn.");
                 System.out.println("Enter a letter corresponding to the column in which you want to place your piece.");
                 column = scan.next();
