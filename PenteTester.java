@@ -20,6 +20,9 @@ class PenteTester {
                 game.computerMove(round);
                 game.printBoard();
                 System.out.println();
+                if(game.checkWin() == "computer"){
+                    System.out.println("Oh no. The computer won.");
+                }
                 
                 System.out.println("You have captured " + game.playerCaptures + " of the computer's sets.");
                 System.out.println("The computer has captured " + game.computerCaptures + " of your sets.");
@@ -42,9 +45,7 @@ class PenteTester {
 
             if(game.checkWin() == "player"){
                 System.out.println("Congrats! You won!");
-            } else if(game.checkWin() == "computer"){
-                System.out.println("Oh no. The computer won.");
-            }
+            } 
         }
     }
 }
