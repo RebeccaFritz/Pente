@@ -111,9 +111,10 @@ class Pente implements PenteInterface{
         } else if (computerHasTwo()){
             // make three
             this.board[this.freeSpace[0]][this.freeSpace[1]] = "O";
+        }
         //} else {
             // place random piece, but make sure the spot is empty
-        }
+        //}
     }
 
     public boolean playerMove(String columnLetter, int row){
@@ -123,7 +124,7 @@ class Pente implements PenteInterface{
             if(columnLabels[i].equals(columnLetter)) column = i;
         }
 
-        //checkForCapture(row-1, column);
+        //checkIfPlayerCaptured(row-1, column);
 
         if(this.board[row-1][column].equals("X") || this.board[row-1][column].equals("O")){
             return false;
@@ -167,10 +168,18 @@ class Pente implements PenteInterface{
             return true;
         } else if(findDiagonalUpOfN(4, "O")){
             return true;
+        // checking for OO-OO, O-OOO, OOO-O in rows, columns, and diagonals
+        } else if(setOfFourinFive("row", "O")){
+            return true;
+        } else if(setOfFourinFive("column", "O")){
+            return true;
+        } else if(setOfFourinFive("diagonalDown", "O")){
+            return true;
+        } else if(setOfFourinFive("diagonalUp", "O")){
+            return true;
         } else {
             return false;
         }
-        // need to check for OO-OO, O-OOO, OOO-O
     }
 
     private boolean playerCanWin(){ 
@@ -183,10 +192,18 @@ class Pente implements PenteInterface{
             return true;
         } else if(findDiagonalUpOfN(4, "X")){
             return true;
+        // checking for XX-XX, X-XXX, XXX-X in rows, columns, and diagonals
+        } else if(setOfFourinFive("row", "X")){
+            return true;
+        } else if(setOfFourinFive("column", "X")){
+            return true;
+        } else if(setOfFourinFive("diagonalDown", "X")){
+            return true;
+        } else if(setOfFourinFive("diagonalUp", "X")){
+            return true;
         } else {
             return false;
         }
-        // need to check for OO-OO, O-OOO, OOO-O
     }
 
     private boolean playerHasThree(){ 
@@ -612,6 +629,111 @@ class Pente implements PenteInterface{
             }
         }
         return false;
+    }
+
+    private boolean setOfFourinFive(String type, String piece){ 
+        String[] fullSet;
+        int rowIdx;
+        int columnIdx;
+        if(type == "row"){
+            for(int j = 0; j < 19; j++){
+                fullSet = getRow(j);
+                this.freeSpace[0] = j;
+
+                for(int i = 0; i < 14; i++){
+                    if(fullSet[i] == piece && fullSet[i+1] == piece && fullSet[i+2] == "-" && fullSet[i+3] == piece && fullSet[i+4] == piece){ // check senario OO-OO
+                        this.freeSpace[1] = i+2;
+                        return true;
+                    } else if(fullSet[i] == piece && fullSet[i+1] == piece && fullSet[i+2] == piece && fullSet[i+3] == "-" && fullSet[i+4] == piece){ // check senario OOO-O
+                        this.freeSpace[1] = i+3;
+                        return true;
+                    } else if(fullSet[i] == piece && fullSet[i+1] == "-" && fullSet[i+2] == piece && fullSet[i+3] == piece && fullSet[i+4] == piece){ // check senario O-OOO
+                        this.freeSpace[1] = i+1;
+                        return true;
+                    }  
+                }
+            }
+            return false;
+        } else if(type == "column"){
+            for(int j = 0; j < 19; j++){
+                fullSet = getColumn(j);
+                this.freeSpace[1] = j;
+
+                for(int i = 0; i < 14; i++){
+                    if(fullSet[i] == piece && fullSet[i+1] == piece && fullSet[i+2] == "-" && fullSet[i+3] == piece && fullSet[i+4] == piece){ // check senario OO-OO
+                        this.freeSpace[0] = i+2;
+                        return true;
+                    } else if(fullSet[i] == piece && fullSet[i+1] == piece && fullSet[i+2] == piece && fullSet[i+3] == "-" && fullSet[i+4] == piece){ // check senario OOO-O
+                        this.freeSpace[0] = i+3;
+                        return true;
+                    } else if(fullSet[i] == piece && fullSet[i+1] == "-" && fullSet[i+2] == piece && fullSet[i+3] == piece && fullSet[i+4] == piece){ // check senario O-OOO
+                        this.freeSpace[0] = i+1;
+                        return true;
+                    }  
+                }
+            } 
+            return false;   
+        } else if(type == "diagonalDown"){ // still checking 3
+            for(int j = 0; j < 28; j++){
+                fullSet = getDiagonalDown(j);
+            
+                if(j <= 14){
+                    rowIdx = 14-j;
+                    columnIdx = 0;
+                } else {
+                    rowIdx = 0;
+                    columnIdx = j-14;
+                }
+
+                for(int i = 0; i < fullSet.length-5; i++){ 
+                    if(fullSet[i] == piece && fullSet[i+1] == piece && fullSet[i+2] == "-" && fullSet[i+3] == piece && fullSet[i+4] == piece){ // check senario OO-OO
+                        this.freeSpace[0] = rowIdx+i+3;
+                        this.freeSpace[1] = columnIdx+i+2;
+                        return true;
+                    } else if(fullSet[i] == piece && fullSet[i+1] == piece && fullSet[i+2] == piece && fullSet[i+3] == "-" && fullSet[i+4] == piece){ // check senario OOO-O
+                        this.freeSpace[0] = rowIdx+i+4;
+                        this.freeSpace[1] = columnIdx+i+3;
+                        return true;
+                    } else if(fullSet[i] == piece && fullSet[i+1] == "-" && fullSet[i+2] == piece && fullSet[i+3] == piece && fullSet[i+4] == piece){ // check senario O-OOO
+                        this.freeSpace[0] = rowIdx+i+2;
+                        this.freeSpace[1] = columnIdx+i+1;
+                        return true;
+                    }  
+                }
+            }
+            return false;
+        } else if(type == "diagonalUp"){ // still checking for 3
+            for(int j = 0; j < 28; j++){
+                fullSet = getDiagonalUp(j);
+            
+                if(j <= 14){
+                    rowIdx = j+4;
+                    columnIdx = 0;
+                } else {
+                    rowIdx = 18;
+                    columnIdx = j-14;
+                }
+
+                for(int i = 0; i < fullSet.length-5; i++){ 
+                    if(fullSet[i] == piece && fullSet[i+1] == piece && fullSet[i+2] == "-" && fullSet[i+3] == piece && fullSet[i+4] == piece){ // check senario OO-OO
+                        this.freeSpace[0] = rowIdx-i+2;
+                        this.freeSpace[1] = columnIdx+i-2;
+                        return true;
+                    } else if(fullSet[i] == piece && fullSet[i+1] == piece && fullSet[i+2] == piece && fullSet[i+3] == "-" && fullSet[i+4] == piece){ // check senario OOO-O
+                        this.freeSpace[0] = rowIdx-i+3;
+                        this.freeSpace[1] = columnIdx+i-3;
+                        return true;
+                    } else if(fullSet[i] == piece && fullSet[i+1] == "-" && fullSet[i+2] == piece && fullSet[i+3] == piece && fullSet[i+4] == piece){ // check senario O-OOO
+                        this.freeSpace[0] = rowIdx-i+1;
+                        this.freeSpace[1] = columnIdx+i-1;
+                        return true;
+                    }  
+                }
+            }
+            return false;
+        } else {
+            return false;
+        }
     }
 
     private boolean setOfThreeinFive(String type, String piece){
