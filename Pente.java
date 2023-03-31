@@ -83,7 +83,7 @@ class Pente implements PenteInterface{
             while(this.board[movePick[0]][movePick[1]].equals("X")){
                 movePick = moveOptions[random.nextInt(moveOptions.length)];
             }
-            this.board[rowPick][columnPick] = "O";
+            this.board[movePick[0]][movePick[1]] = "O";
         } else if(computerCanWin()){
             // take win
             this.board[this.freeSpace[0]][this.freeSpace[1]] = "O";
