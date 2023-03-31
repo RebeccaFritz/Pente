@@ -79,11 +79,9 @@ class Pente implements PenteInterface{
             this.board[9][9] = "O";
         } else if(round == 2){
             int[][] moveOptions = {{7,7},{7,9},{7,11},{8,8},{8,9},{8,10},{9,7},{9,8},{9,10},{9,11},{10,8},{10,9},{10,10},{11,7},{11,9},{11,11}};
-            int rowPick = moveOptions[random.nextInt(moveOptions.length)][0];
-            int columnPick = moveOptions[random.nextInt(moveOptions.length)][1];
-            while(this.board[rowPick][columnPick].equals("X")){
-                rowPick = moveOptions[random.nextInt(moveOptions.length)][0];
-                columnPick = moveOptions[random.nextInt(moveOptions.length)][1];
+            int[] movePick = moveOptions[random.nextInt(moveOptions.length)];
+            while(this.board[movePick[0]][movePick[1]].equals("X")){
+                movePick = moveOptions[random.nextInt(moveOptions.length)];
             }
             this.board[rowPick][columnPick] = "O";
         } else if(computerCanWin()){
