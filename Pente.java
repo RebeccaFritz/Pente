@@ -64,7 +64,7 @@ class Pente implements PenteInterface{
         }
     }
 
-    public String checkWin(){ // this does not check for diagonal wins
+    public String checkWin(){
         if(findRowOfN(5, "O") || findColumnOfN(5, "O") || findDiagonalDownOfN(5, "O") || findDiagonalUpOfN(5, "O") || computerCaptures == 5){
             return "computer";
         } else if(findRowOfN(5, "X") || findColumnOfN(5, "X") || findDiagonalDownOfN(5, "X") || findDiagonalUpOfN(5, "X") ||playerCaptures == 5){
@@ -108,9 +108,10 @@ class Pente implements PenteInterface{
         } else if(computerHasThree()){
             // make four
             this.board[this.freeSpace[0]][this.freeSpace[1]] = "O";
-        } // else {
-            // check senarios O-O-O, OOO--, -OOO-, --OOO, OO-O-, O-OO-, -O-OO, -OO-O
-            // -O-O-, OO---, O-O--, O--O-, O---O, -OO--, -O--O, --OO-, --O-O, ---OO
+        } // else if (computerHasTwo()){
+            // make three
+        //} else {
+            // place random piece, but make sure the spot is empty
         //}
     }
 
@@ -158,9 +159,10 @@ class Pente implements PenteInterface{
     private boolean computerCanWin(){ 
         // check for four "O" in a row with a free space on one side
         return findRowOfN(4, "O"); 
+        // need to check for OO-OO, O-OOO, OOO-O
     }
 
-    private boolean playerCanWin(){ // non functional
+    private boolean playerCanWin(){ 
         // check for four "X" in a row with a free space on one side
         if(findRowOfN(4, "X")){
             return true;
@@ -175,7 +177,7 @@ class Pente implements PenteInterface{
         }
     }
 
-    private boolean playerHasThree(){ // non functional
+    private boolean playerHasThree(){ 
         // check for three "X" in a row with free space on both sides
         if(findRowOfN(3, "X")){
             return true;
@@ -190,9 +192,26 @@ class Pente implements PenteInterface{
         }
     }
 
-    private boolean computerHasThree(){ // non functional
-        // check for three "O" in a row with free space on both sides
-        return findRowOfN(3, "O"); 
+    private boolean computerHasThree(){ 
+        if(findRowOfN(3, "O")){ // check for three "O" in a row with free space on both sides
+            return true;
+    // check senarios O-O-O, OOO--, -OOO-, --OOO, OO-O-, O-OO-, -O-OO, -OO-O for rows, columns, and diagonals
+        } else if(setOfThreeinFive("row", "O")){ 
+            return true;
+        } else if(setOfThreeinFive("column", "O")){ 
+            return true;
+        } else if(setOfThreeinFive("diagonalDown", "O")){ 
+            return true;
+        } else if(setOfThreeinFive("diagonalUp", "O")){ 
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private boolean computerHasTwo(){
+        return false; 
+        // check senarios -O-O-, OO---, O-O--, O--O-, O---O, -OO--, -O--O, --OO-, --O-O, ---OO
     }
 
     private boolean findRowOfN(int n, String piece){
@@ -419,11 +438,11 @@ class Pente implements PenteInterface{
                 this.freeSpace[0] = rowIdx+i+1;
                 this.freeSpace[1] = columnIdx+i;
                 return true;
-            } else if(n == 4 && numInDiagonal == n && diagonal[i-5] == "-"){ // 4 in a column with a free space on the top left
+            } else if(n == 4 && numInDiagonal == n && diagonal[i-5] == "-"){ // 4 in a downward diagonal with a free space on the top left
                 this.freeSpace[0] = rowIdx+i-5;
                 this.freeSpace[1] = columnIdx+i-5;
                 return true;
-            }  else if(n == 2 && numInDiagonal == n && diagonal[i] == "-" && diagonal[i-3] == opposingPiece){ // two in a column with a free space on the bottom right and the opposing peice on top left
+            }  else if(n == 2 && numInDiagonal == n && diagonal[i] == "-" && diagonal[i-3] == opposingPiece){ // two in a downward diagonal with a free space on the bottom right and the opposing peice on top left
                 this.freeSpace[0] = rowIdx+i+1;
                 this.freeSpace[1] = columnIdx+i;
                 this.captivePieceOne[0] = rowIdx+i-1;
@@ -431,7 +450,7 @@ class Pente implements PenteInterface{
                 this.captivePieceTwo[0] = rowIdx+i-2;
                 this.captivePieceTwo[1] = columnIdx+i-2;
                 return true;
-            } else if(n == 2 && numInDiagonal == n && diagonal[i] == opposingPiece && diagonal[i-3] == "-"){ // two in a column with the opposing peice on the bottom and a free space on top
+            } else if(n == 2 && numInDiagonal == n && diagonal[i] == opposingPiece && diagonal[i-3] == "-"){ // two in a downward diagonal with the opposing peice on the bottom and a free space on top
                 this.freeSpace[0] = rowIdx+i-3;
                 this.freeSpace[1] = columnIdx+i-3;
                 this.captivePieceOne[0] = rowIdx+i-1;
@@ -571,5 +590,324 @@ class Pente implements PenteInterface{
             }
         }
         return false;
+    }
+
+    private boolean setOfThreeinFive(String type, String piece){
+        String[] fullSet;
+        int rowIdx;
+        int columnIdx;
+        if(type == "row"){
+            for(int j = 0; j < 19; j++){
+                fullSet = getRow(j);
+                this.freeSpace[0] = j;
+
+                for(int i = 0; i < 14; i++){
+                    if(fullSet[i] == piece && fullSet[i+1] == "-" && fullSet[i+2] == piece && fullSet[i+3] == "-" && fullSet[i+4] == piece){ // check senario O-O-O
+                        if(random.nextInt(2) == 0){
+                            this.freeSpace[1] = i+1;
+                        } else {
+                            this.freeSpace[1] = i+3;
+                        }
+                        return true;
+                    } else if(fullSet[i] == piece && fullSet[i+1] == piece && fullSet[i+2] == piece && fullSet[i+3] == "-" && fullSet[i+4] == "-"){ // check senario OOO--
+                        if(random.nextInt(2) == 0){
+                            this.freeSpace[1] = i+3;
+                        } else {
+                            this.freeSpace[1] = i+4;
+                        }
+                        return true;
+                    } else if(fullSet[i] == "-" && fullSet[i+1] == piece && fullSet[i+2] == piece && fullSet[i+3] == piece && fullSet[i+4] == "-"){ // check senario -OOO-
+                        if(random.nextInt(2) == 0){
+                            this.freeSpace[1] = i;
+                        } else {
+                            this.freeSpace[1] = i+4;
+                        }
+                        return true;
+                    } else if(fullSet[i] == "-" && fullSet[i+1] == "-" && fullSet[i+2] == piece && fullSet[i+3] == piece && fullSet[i+4] == piece){ // check senario --OOO
+                        if(random.nextInt(2) == 0){
+                            this.freeSpace[1] = i;
+                        } else {
+                            this.freeSpace[1] = i+1;
+                        }
+                        return true;
+                    } else if(fullSet[i] == piece && fullSet[i+1] == "-" && fullSet[i+2] == piece && fullSet[i+3] == piece && fullSet[i+4] == "-"){ // check senario O-OO-
+                        if(random.nextInt(2) == 0){
+                            this.freeSpace[1] = i+1;
+                        } else {
+                            this.freeSpace[1] = i+4;
+                        }
+                        return true;
+                    } else if(fullSet[i] == piece && fullSet[i+1] == piece && fullSet[i+2] == "-" && fullSet[i+3] == piece && fullSet[i+4] == "-"){ // check senario OO-O-
+                        if(random.nextInt(2) == 0){
+                            this.freeSpace[1] = i+2;
+                        } else {
+                            this.freeSpace[1] = i+4;
+                        }
+                        return true;
+                    } else if(fullSet[i] == "-" && fullSet[i+1] == piece && fullSet[i+2] == "-" && fullSet[i+3] == piece && fullSet[i+4] == piece){ // check senario -O-OO,
+                        if(random.nextInt(2) == 0){
+                            this.freeSpace[1] = i;
+                        } else {
+                            this.freeSpace[1] = i+2;
+                        }
+                        return true;
+                    } else if(fullSet[i] == "-" && fullSet[i+1] == piece && fullSet[i+2] == piece && fullSet[i+3] == "-" && fullSet[i+4] == piece){ // check senario -OO-O
+                        if(random.nextInt(2) == 0){
+                            this.freeSpace[1] = i;
+                        } else {
+                            this.freeSpace[1] = i+3;
+                        }
+                        return true;
+                    } 
+                }
+            }
+            return false;
+        } else if(type == "column"){
+            for(int j = 0; j < 19; j++){
+                fullSet = getColumn(j);
+                this.freeSpace[1] = j;
+
+                for(int i = 0; i < 14; i++){
+                    if(fullSet[i] == piece && fullSet[i+1] == "-" && fullSet[i+2] == piece && fullSet[i+3] == "-" && fullSet[i+4] == piece){ // check senario O-O-O
+                        if(random.nextInt(2) == 0){
+                            this.freeSpace[0] = i+1;
+                        } else {
+                            this.freeSpace[0] = i+3;
+                        }
+                        return true;
+                    } else if(fullSet[i] == piece && fullSet[i+1] == piece && fullSet[i+2] == piece && fullSet[i+3] == "-" && fullSet[i+4] == "-"){ // check senario OOO--
+                        if(random.nextInt(2) == 0){
+                            this.freeSpace[0] = i+3;
+                        } else {
+                            this.freeSpace[0] = i+4;
+                        }
+                        return true;
+                    } else if(fullSet[i] == "-" && fullSet[i+1] == piece && fullSet[i+2] == piece && fullSet[i+3] == piece && fullSet[i+4] == "-"){ // check senario -OOO-
+                        if(random.nextInt(2) == 0){
+                            this.freeSpace[0] = i;
+                        } else {
+                            this.freeSpace[0] = i+4;
+                        }
+                        return true;
+                    } else if(fullSet[i] == "-" && fullSet[i+1] == "-" && fullSet[i+2] == piece && fullSet[i+3] == piece && fullSet[i+4] == piece){ // check senario --OOO
+                        if(random.nextInt(2) == 0){
+                            this.freeSpace[0] = i;
+                        } else {
+                            this.freeSpace[0] = i+1;
+                        }
+                        return true;
+                    } else if(fullSet[i] == piece && fullSet[i+1] == "-" && fullSet[i+2] == piece && fullSet[i+3] == piece && fullSet[i+4] == "-"){ // check senario O-OO-
+                        if(random.nextInt(2) == 0){
+                            this.freeSpace[0] = i+1;
+                        } else {
+                            this.freeSpace[0] = i+4;
+                        }
+                        return true;
+                    } else if(fullSet[i] == piece && fullSet[i+1] == piece && fullSet[i+2] == "-" && fullSet[i+3] == piece && fullSet[i+4] == "-"){ // check senario OO-O-
+                        if(random.nextInt(2) == 0){
+                            this.freeSpace[0] = i+2;
+                        } else {
+                            this.freeSpace[0] = i+4;
+                        }
+                        return true;
+                    } else if(fullSet[i] == "-" && fullSet[i+1] == piece && fullSet[i+2] == "-" && fullSet[i+3] == piece && fullSet[i+4] == piece){ // check senario -O-OO,
+                        if(random.nextInt(2) == 0){
+                            this.freeSpace[0] = i;
+                        } else {
+                            this.freeSpace[0] = i+2;
+                        }
+                        return true;
+                    } else if(fullSet[i] == "-" && fullSet[i+1] == piece && fullSet[i+2] == piece && fullSet[i+3] == "-" && fullSet[i+4] == piece){ // check senario -OO-O
+                        if(random.nextInt(2) == 0){
+                            this.freeSpace[0] = i;
+                        } else {
+                            this.freeSpace[0] = i+3;
+                        }
+                        return true;
+                    } 
+                }
+            } 
+            return false;   
+        } else if(type == "diagonalDown"){
+            for(int j = 0; j < 28; j++){
+                fullSet = getDiagonalDown(j);
+            
+                if(j <= 14){
+                    rowIdx = 14-j;
+                    columnIdx = 0;
+                } else {
+                    rowIdx = 0;
+                    columnIdx = j-14;
+                }
+
+                for(int i = 0; i < fullSet.length-5; i++){ 
+                    if(fullSet[i] == piece && fullSet[i+1] == "-" && fullSet[i+2] == piece && fullSet[i+3] == "-" && fullSet[i+4] == piece){ // check senario O-O-O
+                        if(random.nextInt(2) == 0){
+                            this.freeSpace[0] = rowIdx+i+1;
+                            this.freeSpace[1] = columnIdx+i;
+                        } else {
+                            this.freeSpace[0] = rowIdx+i+4;
+                            this.freeSpace[1] = columnIdx+i+3;
+                        }
+                        return true;
+                    } else if(fullSet[i] == piece && fullSet[i+1] == piece && fullSet[i+2] == piece && fullSet[i+3] == "-" && fullSet[i+4] == "-"){ // check senario OOO--
+                        if(random.nextInt(2) == 0){
+                            this.freeSpace[0] = rowIdx+i+4;
+                            this.freeSpace[1] = columnIdx+i+3;
+                        } else {
+                            this.freeSpace[0] = rowIdx+i+5;
+                            this.freeSpace[1] = columnIdx+i+4;
+                        }
+                        return true;
+                    } else if(fullSet[i] == "-" && fullSet[i+1] == piece && fullSet[i+2] == piece && fullSet[i+3] == piece && fullSet[i+4] == "-"){ // check senario -OOO-
+                        if(random.nextInt(2) == 0){
+                            this.freeSpace[0] = rowIdx+i+1;
+                            this.freeSpace[1] = columnIdx+i;
+                        } else {
+                            this.freeSpace[0] = rowIdx+i+5;
+                            this.freeSpace[1] = columnIdx+i+4;
+                        }
+                        return true;
+                    } else if(fullSet[i] == "-" && fullSet[i+1] == "-" && fullSet[i+2] == piece && fullSet[i+3] == piece && fullSet[i+4] == piece){ // check senario --OOO
+                        if(random.nextInt(2) == 0){
+                            this.freeSpace[0] = rowIdx+i+1;
+                            this.freeSpace[1] = columnIdx+i;
+                        } else {
+                            this.freeSpace[0] = rowIdx+i+2;
+                            this.freeSpace[1] = columnIdx+i+1;
+                        }
+                        return true;
+                    } else if(fullSet[i] == piece && fullSet[i+1] == "-" && fullSet[i+2] == piece && fullSet[i+3] == piece && fullSet[i+4] == "-"){ // check senario O-OO-
+                        if(random.nextInt(2) == 0){
+                            this.freeSpace[0] = rowIdx+i+2;
+                            this.freeSpace[1] = columnIdx+i+1;
+                        } else {
+                            this.freeSpace[0] = rowIdx+i+5;
+                            this.freeSpace[1] = columnIdx+i+4;
+                        }
+                        return true;
+                    } else if(fullSet[i] == piece && fullSet[i+1] == piece && fullSet[i+2] == "-" && fullSet[i+3] == piece && fullSet[i+4] == "-"){ // check senario OO-O-
+                        if(random.nextInt(2) == 0){
+                            this.freeSpace[0] = rowIdx+i+3;
+                            this.freeSpace[1] = columnIdx+i+2;
+                        } else {
+                            this.freeSpace[0] = rowIdx+i+5;
+                            this.freeSpace[1] = columnIdx+i+4;
+                        }
+                        return true;
+                    } else if(fullSet[i] == "-" && fullSet[i+1] == piece && fullSet[i+2] == "-" && fullSet[i+3] == piece && fullSet[i+4] == piece){ // check senario -O-OO,
+                        if(random.nextInt(2) == 0){
+                            this.freeSpace[0] = rowIdx+i+1;
+                            this.freeSpace[1] = columnIdx+i;
+                        } else {
+                            this.freeSpace[0] = rowIdx+i+3;
+                            this.freeSpace[1] = columnIdx+i+2;
+                        }
+                        return true;
+                    } else if(fullSet[i] == "-" && fullSet[i+1] == piece && fullSet[i+2] == piece && fullSet[i+3] == "-" && fullSet[i+4] == piece){ // check senario -OO-O
+                        if(random.nextInt(2) == 0){
+                            this.freeSpace[0] = rowIdx+i+1;
+                            this.freeSpace[1] = columnIdx+i;
+                        } else {
+                            this.freeSpace[0] = rowIdx+i+4;
+                            this.freeSpace[1] = columnIdx+i+3;
+                        }
+                        return true;
+                    } 
+                }
+            }
+            return false;
+        } else if(type == "diagonalUp"){
+            for(int j = 0; j < 28; j++){
+                fullSet = getDiagonalUp(j);
+            
+                if(j <= 14){
+                    rowIdx = j+4;
+                    columnIdx = 0;
+                } else {
+                    rowIdx = 18;
+                    columnIdx = j-14;
+                }
+
+                for(int i = 0; i < fullSet.length-5; i++){ 
+                    if(fullSet[i] == piece && fullSet[i+1] == "-" && fullSet[i+2] == piece && fullSet[i+3] == "-" && fullSet[i+4] == piece){ // check senario O-O-O
+                        if(random.nextInt(2) == 0){
+                            this.freeSpace[0] = rowIdx-i+1;
+                            this.freeSpace[1] = columnIdx+i-1;
+                        } else {
+                            this.freeSpace[0] = rowIdx-i+3;
+                            this.freeSpace[1] = columnIdx+i-3;
+                        }
+                        return true;
+                    } else if(fullSet[i] == piece && fullSet[i+1] == piece && fullSet[i+2] == piece && fullSet[i+3] == "-" && fullSet[i+4] == "-"){ // check senario OOO--
+                        if(random.nextInt(2) == 0){
+                            this.freeSpace[0] = rowIdx-i+3;
+                            this.freeSpace[1] = columnIdx+i-3;
+                        } else {
+                            this.freeSpace[0] = rowIdx-i+4;
+                            this.freeSpace[1] = columnIdx+i-4;
+                        }
+                        return true;
+                    } else if(fullSet[i] == "-" && fullSet[i+1] == piece && fullSet[i+2] == piece && fullSet[i+3] == piece && fullSet[i+4] == "-"){ // check senario -OOO-
+                        if(random.nextInt(2) == 0){
+                            this.freeSpace[0] = rowIdx-i;
+                            this.freeSpace[1] = columnIdx+i;
+                        } else {
+                            this.freeSpace[0] = rowIdx-i+4;
+                            this.freeSpace[1] = columnIdx+i-4;
+                        }
+                        return true;
+                    } else if(fullSet[i] == "-" && fullSet[i+1] == "-" && fullSet[i+2] == piece && fullSet[i+3] == piece && fullSet[i+4] == piece){ // check senario --OOO
+                        if(random.nextInt(2) == 0){
+                            this.freeSpace[0] = rowIdx-i;
+                            this.freeSpace[1] = columnIdx+i;
+                        } else {
+                            this.freeSpace[0] = rowIdx-i+1;
+                            this.freeSpace[1] = columnIdx+i-1;
+                        }
+                        return true;
+                    } else if(fullSet[i] == piece && fullSet[i+1] == "-" && fullSet[i+2] == piece && fullSet[i+3] == piece && fullSet[i+4] == "-"){ // check senario O-OO-
+                        if(random.nextInt(2) == 0){
+                            this.freeSpace[0] = rowIdx-i+1;
+                            this.freeSpace[1] = columnIdx+i-1;
+                        } else {
+                            this.freeSpace[0] = rowIdx-i+4;
+                            this.freeSpace[1] = columnIdx+i-4;
+                        }
+                        return true;
+                    } else if(fullSet[i] == piece && fullSet[i+1] == piece && fullSet[i+2] == "-" && fullSet[i+3] == piece && fullSet[i+4] == "-"){ // check senario OO-O-
+                        if(random.nextInt(2) == 0){
+                            this.freeSpace[0] = rowIdx-i+2;
+                            this.freeSpace[1] = columnIdx+i-2;
+                        } else {
+                            this.freeSpace[0] = rowIdx-i+4;
+                            this.freeSpace[1] = columnIdx+i-4;
+                        }
+                        return true;
+                    } else if(fullSet[i] == "-" && fullSet[i+1] == piece && fullSet[i+2] == "-" && fullSet[i+3] == piece && fullSet[i+4] == piece){ // check senario -O-OO,
+                        if(random.nextInt(2) == 0){
+                            this.freeSpace[0] = rowIdx-i;
+                            this.freeSpace[1] = columnIdx+i;
+                        } else {
+                            this.freeSpace[0] = rowIdx-i+2;
+                            this.freeSpace[1] = columnIdx+i-2;
+                        }
+                        return true;
+                    } else if(fullSet[i] == "-" && fullSet[i+1] == piece && fullSet[i+2] == piece && fullSet[i+3] == "-" && fullSet[i+4] == piece){ // check senario -OO-O
+                        if(random.nextInt(2) == 0){
+                            this.freeSpace[0] = rowIdx-i;
+                            this.freeSpace[1] = columnIdx+i;
+                        } else {
+                            this.freeSpace[0] = rowIdx-i+3;
+                            this.freeSpace[1] = columnIdx+i-3;
+                        }
+                        return true;
+                    } 
+                }
+            }
+            return false;
+        } else {
+            return false;
+        }
     }
 }
