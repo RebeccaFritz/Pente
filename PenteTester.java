@@ -22,6 +22,7 @@ class PenteTester {
                 System.out.println();
                 if(game.checkWin() == "computer"){
                     System.out.println("Oh no. The computer won.");
+                    break;
                 }
                 
                 System.out.println("You have captured " + game.playerCaptures + " of the computer's sets.");
