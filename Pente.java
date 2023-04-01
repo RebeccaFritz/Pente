@@ -352,7 +352,7 @@ class Pente implements PenteInterface{
         for(int i = 0; i < 19; i++){
             if(n == 5 && numInRow == n){ // win condition
                 return true;
-            } else if(i > 0 && n == 3 && numInRow == n && row[i] == "-" && row[i-(n+1)] == "-"){ // 3 in a row with a free space on both sides
+            } else if(i > 3 && n == 3 && numInRow == n && row[i] == "-" && row[i-4] == "-"){ // 3 in a row with a free space on both sides
                 if(random.nextInt(2) == 0){
                     this.freeSpace[1] = i;
                 } else {
@@ -362,15 +362,15 @@ class Pente implements PenteInterface{
             } else if(n == 4 && numInRow == n && row[i] == "-"){ // four in a row with a free space to the right
                 this.freeSpace[1] = i;
                 return true;
-            } else if(i > 0 && n == 4 && numInRow == n && row[i-5] == "-"){ // four in a row with a free space to the left
+            } else if(i > 4 && n == 4 && numInRow == n && row[i-5] == "-"){ // four in a row with a free space to the left
                 this.freeSpace[1] = i-5;
                 return true;
-            }  else if(i > 0 && n == 2 && numInRow == n && row[i] == "-" && row[i-(n+1)] == opposingPiece){ // two in a row with a free space to the right and the opposing peice to the left
+            }  else if(i > 2 && n == 2 && numInRow == n && row[i] == "-" && row[i-3] == opposingPiece){ // two in a row with a free space to the right and the opposing peice to the left
                 this.freeSpace[1] = i;
                 this.captivePieceOne[1] = i-1;
                 this.captivePieceTwo[1] = i-2;
                 return true;
-            } else if(i > 0 && n == 2 && numInRow == n && row[i] == opposingPiece && row[i-(n+1)] == "-"){ // two in a row with the opposing peice to the right and a free space to the left
+            } else if(i > 2 && n == 2 && numInRow == n && row[i] == opposingPiece && row[i-3] == "-"){ // two in a row with the opposing peice to the right and a free space to the left
                 this.freeSpace[1] = i-(n+1);
                 this.captivePieceOne[1] = i-1;
                 this.captivePieceTwo[1] = i-2;
@@ -418,7 +418,7 @@ class Pente implements PenteInterface{
         for(int i = 0; i < 19; i++){
             if(n == 5 && numInColumn == n){ // win condition
                 return true;
-            } else if(i > 0 && n == 3 && numInColumn == n && column[i] == "-" && column[i-(n+1)] == "-"){ // 3 in a column with a free space on both sides
+            } else if(i > 3 && n == 3 && numInColumn == n && column[i] == "-" && column[i-4] == "-"){ // 3 in a column with a free space on both sides
                 if(random.nextInt(2) == 0){
                     this.freeSpace[0] = i;
                 } else {
@@ -428,15 +428,15 @@ class Pente implements PenteInterface{
             } else if(n == 4 && numInColumn == n && column[i] == "-"){ // 4 in a column with a free space on the bottom
                 this.freeSpace[0] = i;
                 return true;
-            } else if(i > 0 && n == 4 && numInColumn == n && column[i-(n+1)] == "-"){ // 4 in a column with a free space on the top
+            } else if(i > 4 && n == 4 && numInColumn == n && column[i-5] == "-"){ // 4 in a column with a free space on the top
                 this.freeSpace[0] = i-(n+1);
                 return true;
-            }  else if(i > 0 && n == 2 && numInColumn == n && column[i] == "-" && column[i-(n+1)] == opposingPiece){ // two in a column with a free space on the bottom and the opposing peice on top
+            }  else if(i > 2 && n == 2 && numInColumn == n && column[i] == "-" && column[i-3] == opposingPiece){ // two in a column with a free space on the bottom and the opposing peice on top
                 this.freeSpace[0] = i;
                 this.captivePieceOne[0] = i-1;
                 this.captivePieceTwo[0] = i-2;
                 return true;
-            } else if(n == 2 && numInColumn == n && column[i] == opposingPiece && column[i-(n+1)] == "-"){ // two in a column with the opposing peice on the bottom and a free space on top
+            } else if(i > 2 && n == 2 && numInColumn == n && column[i] == opposingPiece && column[i-3] == "-"){ // two in a column with the opposing peice on the bottom and a free space on top
                 this.freeSpace[0] = i-(n+1);
                 this.captivePieceOne[0] = i-1;
                 this.captivePieceTwo[0] = i-2;
@@ -530,10 +530,10 @@ class Pente implements PenteInterface{
         }
 
         int numInDiagonal = 0;
-        for(int i = 1; i < diagonal.length; i++){
+        for(int i = 0; i < diagonal.length; i++){
             if(n == 5 && numInDiagonal == n){ // win condition
                 return true;
-            } else if(n == 3 && numInDiagonal == n && diagonal[i] == "-" && diagonal[i-4] == "-"){ // 3 in a downward diagonal with a free space on both sides
+            } else if(i > 3 && n == 3 && numInDiagonal == n && diagonal[i] == "-" && diagonal[i-4] == "-"){ // 3 in a downward diagonal with a free space on both sides
                 if(random.nextInt(2) == 0){
                     this.freeSpace[0] = rowIdx+i;
                     this.freeSpace[1] = columnIdx+i;
@@ -546,11 +546,11 @@ class Pente implements PenteInterface{
                 this.freeSpace[0] = rowIdx+i;
                 this.freeSpace[1] = columnIdx+i;
                 return true;
-            } else if(n == 4 && numInDiagonal == n && diagonal[i-5] == "-"){ // 4 in a downward diagonal with a free space on the top left
+            } else if(i > 4 && n == 4 && numInDiagonal == n && diagonal[i-5] == "-"){ // 4 in a downward diagonal with a free space on the top left
                 this.freeSpace[0] = rowIdx+i-5;
                 this.freeSpace[1] = columnIdx+i-5;
                 return true;
-            }  else if(n == 2 && numInDiagonal == n && diagonal[i] == "-" && diagonal[i-3] == opposingPiece){ // two in a downward diagonal with a free space on the bottom right and the opposing peice on top left
+            }  else if(i > 2 && n == 2 && numInDiagonal == n && diagonal[i] == "-" && diagonal[i-3] == opposingPiece){ // two in a downward diagonal with a free space on the bottom right and the opposing peice on top left
                 this.freeSpace[0] = rowIdx+i;
                 this.freeSpace[1] = columnIdx+i;
                 this.captivePieceOne[0] = rowIdx+i-1;
@@ -558,7 +558,7 @@ class Pente implements PenteInterface{
                 this.captivePieceTwo[0] = rowIdx+i-2;
                 this.captivePieceTwo[1] = columnIdx+i-2;
                 return true;
-            } else if(n == 2 && numInDiagonal == n && diagonal[i] == opposingPiece && diagonal[i-3] == "-"){ // two in a downward diagonal with the opposing peice on the bottom and a free space on top
+            } else if(i > 2 && n == 2 && numInDiagonal == n && diagonal[i] == opposingPiece && diagonal[i-3] == "-"){ // two in a downward diagonal with the opposing peice on the bottom and a free space on top
                 this.freeSpace[0] = rowIdx+i-3;
                 this.freeSpace[1] = columnIdx+i-3;
                 this.captivePieceOne[0] = rowIdx+i-1;
@@ -655,10 +655,10 @@ class Pente implements PenteInterface{
         }
 
         int numInDiagonal = 0;
-        for(int i = 1; i < diagonal.length; i++){
+        for(int i = 0; i < diagonal.length; i++){
             if(n == 5 && numInDiagonal == n){ // win condition
                 return true;
-            } else if(n == 3 && numInDiagonal == n && diagonal[i] == "-" && diagonal[i-4] == "-"){ // 3 in a upward diagonal with a free space on both sides
+            } else if(i > 3 && n == 3 && numInDiagonal == n && diagonal[i] == "-" && diagonal[i-4] == "-"){ // 3 in a upward diagonal with a free space on both sides
                 if(random.nextInt(2) == 0){
                     this.freeSpace[0] = rowIdx-i;
                     this.freeSpace[1] = columnIdx+i;
@@ -671,11 +671,11 @@ class Pente implements PenteInterface{
                 this.freeSpace[0] = rowIdx-i;
                 this.freeSpace[1] = columnIdx+i;
                 return true;
-            } else if(n == 4 && numInDiagonal == n && diagonal[i-5] == "-"){ // 4 in a upward diagonal with a free space on the top right
+            } else if(i > 4 && n == 4 && numInDiagonal == n && diagonal[i-5] == "-"){ // 4 in a upward diagonal with a free space on the top right
                 this.freeSpace[0] = rowIdx-i-5;
                 this.freeSpace[1] = columnIdx+i+5;
                 return true;
-            }  else if(n == 2 && numInDiagonal == n && diagonal[i] == "-" && diagonal[i-3] == opposingPiece){ // two in a upward diagonal with a free space on the bottom left and the opposing peice on top right
+            }  else if(i > 2 && n == 2 && numInDiagonal == n && diagonal[i] == "-" && diagonal[i-3] == opposingPiece){ // two in a upward diagonal with a free space on the bottom left and the opposing peice on top right
                 this.freeSpace[0] = rowIdx-i;
                 this.freeSpace[1] = columnIdx+i;
                 this.captivePieceOne[0] = rowIdx-i-1;
@@ -683,7 +683,7 @@ class Pente implements PenteInterface{
                 this.captivePieceTwo[0] = rowIdx-i-2;
                 this.captivePieceTwo[1] = columnIdx+i+2;
                 return true;
-            } else if(n == 2 && numInDiagonal == n && diagonal[i] == opposingPiece && diagonal[i-3] == "-"){ // two in a upward diagonal with the opposing peice on the bottom left and a free space on top right
+            } else if(i > 2 && n == 2 && numInDiagonal == n && diagonal[i] == opposingPiece && diagonal[i-3] == "-"){ // two in a upward diagonal with the opposing peice on the bottom left and a free space on top right
                 this.freeSpace[0] = rowIdx-i-3;
                 this.freeSpace[1] = columnIdx+i+3;
                 this.captivePieceOne[0] = rowIdx-i-1;
