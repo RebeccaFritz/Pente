@@ -261,7 +261,7 @@ class Pente implements PenteInterface{
             return true;
         } else if(findDiagonalUpOfN(3, "X")){
             return true;
-        // check senarios X-X-X, XXX--, -XXX-, --XXX, X-X-, X-X-, -X-X, -X-X for rows, columns, and diagonals
+        // check senarios X-X-X, -XXX-, XX-X-, X-XX-, -X-XX, -XX-X for rows, columns, and diagonals
         } else if(setOfThreeinFive("row", "X")){ 
             return true;
         } else if(setOfThreeinFive("column", "X")){ 
@@ -349,10 +349,10 @@ class Pente implements PenteInterface{
         }
 
         int numInRow = 0;
-        for(int i = 1; i < 19; i++){
+        for(int i = 0; i < 19; i++){
             if(n == 5 && numInRow == n){ // win condition
                 return true;
-            } else if(n == 3 && numInRow == n && row[i] == "-" && row[i-(n+1)] == "-"){ // 3 in a row with a free space on both sides
+            } else if(i < 0 && n == 3 && numInRow == n && row[i] == "-" && row[i-(n+1)] == "-"){ // 3 in a row with a free space on both sides
                 if(random.nextInt(2) == 0){
                     this.freeSpace[1] = i;
                 } else {
@@ -362,15 +362,15 @@ class Pente implements PenteInterface{
             } else if(n == 4 && numInRow == n && row[i] == "-"){ // four in a row with a free space to the right
                 this.freeSpace[1] = i;
                 return true;
-            } else if(n == 4 && numInRow == n && row[i-(n+1)] == "-"){ // four in a row with a free space to the left
-                this.freeSpace[1] = i-(n+1);
+            } else if(i < 0 && n == 4 && numInRow == n && row[i-5] == "-"){ // four in a row with a free space to the left
+                this.freeSpace[1] = i-5;
                 return true;
-            }  else if(n == 2 && numInRow == n && row[i] == "-" && row[i-(n+1)] == opposingPiece){ // two in a row with a free space to the right and the opposing peice to the left
+            }  else if(i < 0 && n == 2 && numInRow == n && row[i] == "-" && row[i-(n+1)] == opposingPiece){ // two in a row with a free space to the right and the opposing peice to the left
                 this.freeSpace[1] = i;
                 this.captivePieceOne[1] = i-1;
                 this.captivePieceTwo[1] = i-2;
                 return true;
-            } else if(n == 2 && numInRow == n && row[i] == opposingPiece && row[i-(n+1)] == "-"){ // two in a row with the opposing peice to the right and a free space to the left
+            } else if(i < 0 && n == 2 && numInRow == n && row[i] == opposingPiece && row[i-(n+1)] == "-"){ // two in a row with the opposing peice to the right and a free space to the left
                 this.freeSpace[1] = i-(n+1);
                 this.captivePieceOne[1] = i-1;
                 this.captivePieceTwo[1] = i-2;
@@ -415,10 +415,10 @@ class Pente implements PenteInterface{
         }
 
         int numInColumn = 0;
-        for(int i = 1; i < 19; i++){
+        for(int i = 0; i < 19; i++){
             if(n == 5 && numInColumn == n){ // win condition
                 return true;
-            } else if(n == 3 && numInColumn == n && column[i] == "-" && column[i-(n+1)] == "-"){ // 3 in a column with a free space on both sides
+            } else if(i < 0 && n == 3 && numInColumn == n && column[i] == "-" && column[i-(n+1)] == "-"){ // 3 in a column with a free space on both sides
                 if(random.nextInt(2) == 0){
                     this.freeSpace[0] = i;
                 } else {
@@ -428,10 +428,10 @@ class Pente implements PenteInterface{
             } else if(n == 4 && numInColumn == n && column[i] == "-"){ // 4 in a column with a free space on the bottom
                 this.freeSpace[0] = i;
                 return true;
-            } else if(n == 4 && numInColumn == n && column[i-(n+1)] == "-"){ // 4 in a column with a free space on the top
+            } else if(i < 0 && n == 4 && numInColumn == n && column[i-(n+1)] == "-"){ // 4 in a column with a free space on the top
                 this.freeSpace[0] = i-(n+1);
                 return true;
-            }  else if(n == 2 && numInColumn == n && column[i] == "-" && column[i-(n+1)] == opposingPiece){ // two in a column with a free space on the bottom and the opposing peice on top
+            }  else if(i < 0 && n == 2 && numInColumn == n && column[i] == "-" && column[i-(n+1)] == opposingPiece){ // two in a column with a free space on the bottom and the opposing peice on top
                 this.freeSpace[0] = i;
                 this.captivePieceOne[0] = i-1;
                 this.captivePieceTwo[0] = i-2;
@@ -822,7 +822,7 @@ class Pente implements PenteInterface{
                             this.freeSpace[1] = i+3;
                         }
                         return true;
-                    } else if(fullSet[i] == piece && fullSet[i+1] == piece && fullSet[i+2] == piece && fullSet[i+3] == "-" && fullSet[i+4] == "-"){ // check senario OOO--
+                    } else if(piece == "O" && fullSet[i] == piece && fullSet[i+1] == piece && fullSet[i+2] == piece && fullSet[i+3] == "-" && fullSet[i+4] == "-"){ // check senario OOO--
                         if(random.nextInt(2) == 0){
                             this.freeSpace[1] = i+3;
                         } else {
@@ -836,7 +836,7 @@ class Pente implements PenteInterface{
                             this.freeSpace[1] = i+4;
                         }
                         return true;
-                    } else if(fullSet[i] == "-" && fullSet[i+1] == "-" && fullSet[i+2] == piece && fullSet[i+3] == piece && fullSet[i+4] == piece){ // check senario --OOO
+                    } else if(piece == "O" && fullSet[i] == "-" && fullSet[i+1] == "-" && fullSet[i+2] == piece && fullSet[i+3] == piece && fullSet[i+4] == piece){ // check senario --OOO
                         if(random.nextInt(2) == 0){
                             this.freeSpace[1] = i;
                         } else {
@@ -902,21 +902,21 @@ class Pente implements PenteInterface{
                             this.freeSpace[0] = i+3;
                         }
                         return true;
-                    } else if(fullSet[i] == piece && fullSet[i+1] == piece && fullSet[i+2] == piece && fullSet[i+3] == "-" && fullSet[i+4] == "-"){ // check senario OOO--
+                    } else if(piece == "O" && fullSet[i] == piece && fullSet[i+1] == piece && fullSet[i+2] == piece && fullSet[i+3] == "-" && fullSet[i+4] == "-"){ // check senario OOO--
                         if(random.nextInt(2) == 0){
                             this.freeSpace[0] = i+3;
                         } else {
                             this.freeSpace[0] = i+4;
                         }
                         return true;
-                    } else if(fullSet[i] == "-" && fullSet[i+1] == piece && fullSet[i+2] == piece && fullSet[i+3] == piece && fullSet[i+4] == "-"){ // check senario -OOO-
+                    } else if(piece == "O" && fullSet[i] == "-" && fullSet[i+1] == piece && fullSet[i+2] == piece && fullSet[i+3] == piece && fullSet[i+4] == "-"){ // check senario -OOO-
                         if(random.nextInt(2) == 0){
                             this.freeSpace[0] = i;
                         } else {
                             this.freeSpace[0] = i+4;
                         }
                         return true;
-                    } else if(fullSet[i] == "-" && fullSet[i+1] == "-" && fullSet[i+2] == piece && fullSet[i+3] == piece && fullSet[i+4] == piece){ // check senario --OOO
+                    } else if(piece == "O" && fullSet[i] == "-" && fullSet[i+1] == "-" && fullSet[i+2] == piece && fullSet[i+3] == piece && fullSet[i+4] == piece){ // check senario --OOO
                         if(random.nextInt(2) == 0){
                             this.freeSpace[0] = i;
                         } else {
@@ -991,7 +991,7 @@ class Pente implements PenteInterface{
                             this.freeSpace[1] = columnIdx+i+3;
                         }
                         return true;
-                    } else if(fullSet[i] == piece && fullSet[i+1] == piece && fullSet[i+2] == piece && fullSet[i+3] == "-" && fullSet[i+4] == "-"){ // check senario OOO--
+                    } else if(piece == "O" && fullSet[i] == piece && fullSet[i+1] == piece && fullSet[i+2] == piece && fullSet[i+3] == "-" && fullSet[i+4] == "-"){ // check senario OOO--
                         if(random.nextInt(2) == 0){
                             this.freeSpace[0] = rowIdx+i+3;
                             this.freeSpace[1] = columnIdx+i+3;
@@ -1009,7 +1009,7 @@ class Pente implements PenteInterface{
                             this.freeSpace[1] = columnIdx+i+4;
                         }
                         return true;
-                    } else if(fullSet[i] == "-" && fullSet[i+1] == "-" && fullSet[i+2] == piece && fullSet[i+3] == piece && fullSet[i+4] == piece){ // check senario --OOO
+                    } else if(piece == "O" && fullSet[i] == "-" && fullSet[i+1] == "-" && fullSet[i+2] == piece && fullSet[i+3] == piece && fullSet[i+4] == piece){ // check senario --OOO
                         if(random.nextInt(2) == 0){
                             this.freeSpace[0] = rowIdx+i;
                             this.freeSpace[1] = columnIdx+i;
@@ -1098,7 +1098,7 @@ class Pente implements PenteInterface{
                             this.freeSpace[1] = columnIdx+i+3;
                         }
                         return true;
-                    } else if(fullSet[i] == piece && fullSet[i+1] == piece && fullSet[i+2] == piece && fullSet[i+3] == "-" && fullSet[i+4] == "-"){ // check senario OOO--
+                    } else if(piece == "O" && fullSet[i] == piece && fullSet[i+1] == piece && fullSet[i+2] == piece && fullSet[i+3] == "-" && fullSet[i+4] == "-"){ // check senario OOO--
                         if(random.nextInt(2) == 0){
                             this.freeSpace[0] = rowIdx-i-3;
                             this.freeSpace[1] = columnIdx+i+3;
@@ -1116,7 +1116,7 @@ class Pente implements PenteInterface{
                             this.freeSpace[1] = columnIdx+i+4;
                         }
                         return true;
-                    } else if(fullSet[i] == "-" && fullSet[i+1] == "-" && fullSet[i+2] == piece && fullSet[i+3] == piece && fullSet[i+4] == piece){ // check senario --OOO
+                    } else if(piece == "O" && fullSet[i] == "-" && fullSet[i+1] == "-" && fullSet[i+2] == piece && fullSet[i+3] == piece && fullSet[i+4] == piece){ // check senario --OOO
                         if(random.nextInt(2) == 0){
                             this.freeSpace[0] = rowIdx-i;
                             this.freeSpace[1] = columnIdx+i;
