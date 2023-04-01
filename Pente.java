@@ -79,15 +79,19 @@ class Pente implements PenteInterface{
             this.board[9][9] = "O";
         } else if(computerCanWin()){
             // take win
+            checkIfCaptured(this.freeSpace[0], this.freeSpace[1], "O");
             this.board[this.freeSpace[0]][this.freeSpace[1]] = "O";
         } else if(playerCanWin()){
             // block win
+            checkIfCaptured(this.freeSpace[0], this.freeSpace[1], "O");
             this.board[this.freeSpace[0]][this.freeSpace[1]] = "O";
         } else if(playerHasThree()){
             // block three
+            checkIfCaptured(this.freeSpace[0], this.freeSpace[1], "O");
             this.board[this.freeSpace[0]][this.freeSpace[1]] = "O";
         } else if(playerCanCapture()){
             // block capture
+            checkIfCaptured(this.freeSpace[0], this.freeSpace[1], "O");
             this.board[this.freeSpace[0]][this.freeSpace[1]] = "O";
         } else if(computerCanCapture()){
             // make capture
@@ -127,47 +131,55 @@ class Pente implements PenteInterface{
             return false;
         } else {
             this.board[row][column] = "X";
-            checkIfPlayerCaptured(row, column);
+            checkIfCaptured(row, column, "X");
             return true;
         }
     }
 
 // Private methods 
-    private void checkIfPlayerCaptured(int row, int column){ // this does not work
-        if(column < 16 && this.board[row][column+1] == "O" && this.board[row][column+2] == "O" && this.board[row][column+3] == "X"){ // check for row capture -OOX
+    private void checkIfCaptured(int row, int column, String piece){ // this does not work
+        String opposingPiece;
+        if(piece == "X"){
+            opposingPiece = "O";
+        } else {
+            opposingPiece = "X";
+        }
+
+        if(column < 16 && this.board[row][column+1] == opposingPiece && this.board[row][column+2] == opposingPiece && this.board[row][column+3] == piece){ // check for row capture -OOX
             this.board[row][column+1] = "-";
             this.board[row][column+2] = "-";
             this.playerCaptures++;
-        } else if(column > 2 && this.board[row][column-3] == "X" && this.board[row][column-2] == "O" && this.board[row][column-1] == "O"){ // check for row capture XOO-
+        } else if(column > 2 && this.board[row][column-3] == piece && this.board[row][column-2] == opposingPiece && this.board[row][column-1] == opposingPiece){ // check for row capture XOO-
             this.board[row][column-1] = "-";
             this.board[row][column-2] = "-";
             this.playerCaptures++;
-        } else if(row < 16 && this.board[row+1][column] == "O" && this.board[row+2][column] == "O" && this.board[row+3][column] == "X"){ // check for column capture -OOX
+        } else if(row < 16 && this.board[row+1][column] == opposingPiece && this.board[row+2][column] == opposingPiece && this.board[row+3][column] == piece){ // check for column capture -OOX
             this.board[row+1][column] = "-";
             this.board[row+2][column] = "-";
             this.playerCaptures++;
-        } else if(row > 2 && this.board[row-3][column] == "X" && this.board[row-2][column] == "O" && this.board[row-1][column] == "O"){ // check for column capture XOO-
+        } else if(row > 2 && this.board[row-3][column] == piece && this.board[row-2][column] == opposingPiece && this.board[row-1][column] == opposingPiece){ // check for column capture XOO-
             this.board[row-1][column] = "-";
             this.board[row-2][column] = "-";
             this.playerCaptures++;
-        } else if(column < 16 && row < 16 && this.board[row+1][column+1] == "O" && this.board[row+2][column+2] == "O" && this.board[row+3][column+3] == "X"){ // check for diagonalDown capture -OOX
+        } else if(column < 16 && row < 16 && this.board[row+1][column+1] == opposingPiece && this.board[row+2][column+2] == opposingPiece && this.board[row+3][column+3] == piece){ // check for diagonalDown capture -OOX
             this.board[row+1][column+1] = "-";
             this.board[row+2][column+2] = "-";
             this.playerCaptures++;
-        } else if(column > 2 && row > 2 && this.board[row-3][column-3] == "X" && this.board[row-2][column-2] == "O" && this.board[row-1][column-1] == "O"){ // check for diagonalDown capture XOO-
+        } else if(column > 2 && row > 2 && this.board[row-3][column-3] == piece && this.board[row-2][column-2] == opposingPiece && this.board[row-1][column-1] == opposingPiece){ // check for diagonalDown capture XOO-
             this.board[row-1][column-1] = "-";
             this.board[row-2][column-2] = "-";
             this.playerCaptures++;
-        } else if(column < 16 && row > 2 && this.board[row-1][column+1] == "O" && this.board[row-2][column+2] == "O" && this.board[row-3][column+3] == "X"){ // check for diagonalUp capture -OOX
+        } else if(column < 16 && row > 2 && this.board[row-1][column+1] == opposingPiece && this.board[row-2][column+2] == opposingPiece && this.board[row-3][column+3] == piece){ // check for diagonalUp capture -OOX
             this.board[row-1][column+1] = "-";
             this.board[row-2][column+2] = "-";
             this.playerCaptures++;
-        } else if(column > 2 && row < 16 && this.board[row+3][column-3] == "X" && this.board[row+2][column-2] == "O" && this.board[row+1][column-1] == "O"){ // check for diagonalUp capture XOO-
+        } else if(column > 2 && row < 16 && this.board[row+3][column-3] == piece && this.board[row+2][column-2] == opposingPiece && this.board[row+1][column-1] == opposingPiece){ // check for diagonalUp capture XOO-
             this.board[row+1][column-1] = "-";
             this.board[row+2][column-2] = "-";
             this.playerCaptures++;
         }
     }
+
     private boolean playerCanCapture(){ 
         // check for two "O" in a row with an "X" beside it
         if(findRowOfN(2, "O")){
