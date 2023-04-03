@@ -78,15 +78,18 @@ class Pente implements PenteInterface{
         if(round == 1){
             this.board[9][9] = "O";
         } else if(computerCanWin()){
-            // take win
+            // check if the computer has four in a row
+            // if so, take win
             this.board[this.freeSpace[0]][this.freeSpace[1]] = "O";
             checkIfCaptured(this.freeSpace[0], this.freeSpace[1], "O");
         } else if(playerCanWin()){
             // block win
+            // check if a block via capture can be made NOT IMPLEMENTED
             this.board[this.freeSpace[0]][this.freeSpace[1]] = "O";
             checkIfCaptured(this.freeSpace[0], this.freeSpace[1], "O");
         } else if(playerHasThree()){
-            // block three
+            // check if the opponent has three in a row with a blank space on either side
+            // if so, block three
             this.board[this.freeSpace[0]][this.freeSpace[1]] = "O";
             checkIfCaptured(this.freeSpace[0], this.freeSpace[1], "O");
         } else if(playerCanCapture()){
@@ -100,15 +103,23 @@ class Pente implements PenteInterface{
             this.board[this.captivePieceTwo[0]][this.captivePieceTwo[1]] = "-";
             computerCaptures++;
         } else if(computerHasThree()){
-            // make four
+            // check if the computer has three in a row
+            // if blocked on one side intersect. If possible make 2 by 2 square. NOT IMPLEMENTED
+	        // if not blocked, make four
             this.board[this.freeSpace[0]][this.freeSpace[1]] = "O";
         } else if(computerHasTwo()){
-            // make three
+            // check if the computer has two in a row
+	        // if blocked on one side intersect. If possible make 2 by 2 square. NOT IMPLEMENTED
+            // if not blocked, make three
             this.board[this.freeSpace[0]][this.freeSpace[1]] = "O";
         } else if(computerHasOne()){
-            // make two
+            // check if the computer has one piece
+	        // if blocked on one side intersect. If possible make 2 by 2 square. NOT IMPLEMENTED
+            // if not blocked, make two
             this.board[this.freeSpace[0]][this.freeSpace[1]] = "O";
         } else {
+            // if no other conditions were met, place in a random piece
+            // checking there are not pieces in that spot
             int randomRow = random.nextInt(19);
             int randomColumn = random.nextInt(19);
             while(this.board[randomRow][randomColumn].equals("X") || this.board[randomRow][randomColumn].equals("O")){
