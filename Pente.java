@@ -79,20 +79,20 @@ class Pente implements PenteInterface{
             this.board[9][9] = "O";
         } else if(computerCanWin()){
             // take win
-            checkIfCaptured(this.freeSpace[0], this.freeSpace[1], "O");
             this.board[this.freeSpace[0]][this.freeSpace[1]] = "O";
+            checkIfCaptured(this.freeSpace[0], this.freeSpace[1], "O");
         } else if(playerCanWin()){
             // block win
-            checkIfCaptured(this.freeSpace[0], this.freeSpace[1], "O");
             this.board[this.freeSpace[0]][this.freeSpace[1]] = "O";
+            checkIfCaptured(this.freeSpace[0], this.freeSpace[1], "O");
         } else if(playerHasThree()){
             // block three
-            checkIfCaptured(this.freeSpace[0], this.freeSpace[1], "O");
             this.board[this.freeSpace[0]][this.freeSpace[1]] = "O";
+            checkIfCaptured(this.freeSpace[0], this.freeSpace[1], "O");
         } else if(playerCanCapture()){
             // block capture
-            checkIfCaptured(this.freeSpace[0], this.freeSpace[1], "O");
             this.board[this.freeSpace[0]][this.freeSpace[1]] = "O";
+            checkIfCaptured(this.freeSpace[0], this.freeSpace[1], "O");
         } else if(computerCanCapture()){
             // make capture
             this.board[this.freeSpace[0]][this.freeSpace[1]] = "O";
@@ -184,8 +184,15 @@ class Pente implements PenteInterface{
         // check for two "O" in a row with an "X" beside it
         if(findRowOfN(2, "O")){
             return true;
+        }else if(findColumnOfN(2, "O")){
+            return true;
+        } else if(findDiagonalDownOfN(2, "O")){
+            return true;
+        } else if(findDiagonalUpOfN(4, "O")){
+            return true;
+        } else {
+            return false;
         }
-        return false;
     }
 
     private boolean computerCanCapture(){ 
@@ -663,7 +670,7 @@ class Pente implements PenteInterface{
                     this.freeSpace[0] = rowIdx-i;
                     this.freeSpace[1] = columnIdx+i;
                 } else {
-                    this.freeSpace[0] = rowIdx-i-4;
+                    this.freeSpace[0] = rowIdx-(i-4);
                     this.freeSpace[1] = columnIdx+i+4;
                 }
                 return true;
@@ -672,23 +679,23 @@ class Pente implements PenteInterface{
                 this.freeSpace[1] = columnIdx+i;
                 return true;
             } else if(i > 4 && n == 4 && numInDiagonal == n && diagonal[i-5] == "-"){ // 4 in a upward diagonal with a free space on the top right
-                this.freeSpace[0] = rowIdx-i-5;
+                this.freeSpace[0] = rowIdx-(i-5);
                 this.freeSpace[1] = columnIdx+i+5;
                 return true;
             }  else if(i > 2 && n == 2 && numInDiagonal == n && diagonal[i] == "-" && diagonal[i-3] == opposingPiece){ // two in a upward diagonal with a free space on the bottom left and the opposing peice on top right
                 this.freeSpace[0] = rowIdx-i;
                 this.freeSpace[1] = columnIdx+i;
-                this.captivePieceOne[0] = rowIdx-i-1;
+                this.captivePieceOne[0] = rowIdx-(i-1);
                 this.captivePieceOne[1] = columnIdx+i+1;
-                this.captivePieceTwo[0] = rowIdx-i-2;
+                this.captivePieceTwo[0] = rowIdx-(i-2);
                 this.captivePieceTwo[1] = columnIdx+i+2;
                 return true;
             } else if(i > 2 && n == 2 && numInDiagonal == n && diagonal[i] == opposingPiece && diagonal[i-3] == "-"){ // two in a upward diagonal with the opposing peice on the bottom left and a free space on top right
-                this.freeSpace[0] = rowIdx-i-3;
+                this.freeSpace[0] = rowIdx-(i-3);
                 this.freeSpace[1] = columnIdx+i+3;
-                this.captivePieceOne[0] = rowIdx-i-1;
+                this.captivePieceOne[0] = rowIdx-(i-1);
                 this.captivePieceOne[1] = columnIdx+i+1;
-                this.captivePieceTwo[0] = rowIdx-i-2;
+                this.captivePieceTwo[0] = rowIdx-(i-2);
                 this.captivePieceTwo[1] = columnIdx+i+2;
                 return true;
             }  else if(diagonal[i] == piece){
@@ -785,15 +792,15 @@ class Pente implements PenteInterface{
 
                 for(int i = 0; i < fullSet.length-5; i++){ 
                     if(fullSet[i] == piece && fullSet[i+1] == piece && fullSet[i+2] == "-" && fullSet[i+3] == piece && fullSet[i+4] == piece){ // check senario OO-OO
-                        this.freeSpace[0] = rowIdx-i-2;
+                        this.freeSpace[0] = rowIdx-(i-2);
                         this.freeSpace[1] = columnIdx+i+2;
                         return true;
                     } else if(fullSet[i] == piece && fullSet[i+1] == piece && fullSet[i+2] == piece && fullSet[i+3] == "-" && fullSet[i+4] == piece){ // check senario OOO-O
-                        this.freeSpace[0] = rowIdx-i-3;
+                        this.freeSpace[0] = rowIdx-(i-3);
                         this.freeSpace[1] = columnIdx+i+3;
                         return true;
                     } else if(fullSet[i] == piece && fullSet[i+1] == "-" && fullSet[i+2] == piece && fullSet[i+3] == piece && fullSet[i+4] == piece){ // check senario O-OOO
-                        this.freeSpace[0] = rowIdx-i-1;
+                        this.freeSpace[0] = rowIdx-(i-1);
                         this.freeSpace[1] = columnIdx+i+1;
                         return true;
                     }  
@@ -1091,16 +1098,16 @@ class Pente implements PenteInterface{
                 for(int i = 0; i < fullSet.length-5; i++){ 
                     if(fullSet[i] == piece && fullSet[i+1] == "-" && fullSet[i+2] == piece && fullSet[i+3] == "-" && fullSet[i+4] == piece){ // check senario O-O-O
                         if(random.nextInt(2) == 0){
-                            this.freeSpace[0] = rowIdx-i-1;
+                            this.freeSpace[0] = rowIdx-(i-1);
                             this.freeSpace[1] = columnIdx+i+1;
                         } else {
-                            this.freeSpace[0] = rowIdx-i-3;
+                            this.freeSpace[0] = rowIdx-(i-3);
                             this.freeSpace[1] = columnIdx+i+3;
                         }
                         return true;
                     } else if(piece == "O" && fullSet[i] == piece && fullSet[i+1] == piece && fullSet[i+2] == piece && fullSet[i+3] == "-" && fullSet[i+4] == "-"){ // check senario OOO--
                         if(random.nextInt(2) == 0){
-                            this.freeSpace[0] = rowIdx-i-3;
+                            this.freeSpace[0] = rowIdx-(i-3);
                             this.freeSpace[1] = columnIdx+i+3;
                         } else {
                             this.freeSpace[0] = rowIdx-i-4;
@@ -1112,7 +1119,7 @@ class Pente implements PenteInterface{
                             this.freeSpace[0] = rowIdx-i;
                             this.freeSpace[1] = columnIdx+i;
                         } else {
-                            this.freeSpace[0] = rowIdx-i-4;
+                            this.freeSpace[0] = rowIdx-(i-4);
                             this.freeSpace[1] = columnIdx+i+4;
                         }
                         return true;
@@ -1121,25 +1128,25 @@ class Pente implements PenteInterface{
                             this.freeSpace[0] = rowIdx-i;
                             this.freeSpace[1] = columnIdx+i;
                         } else {
-                            this.freeSpace[0] = rowIdx-i-1;
+                            this.freeSpace[0] = rowIdx-(i-1);
                             this.freeSpace[1] = columnIdx+i+1;
                         }
                         return true;
                     } else if(fullSet[i] == piece && fullSet[i+1] == "-" && fullSet[i+2] == piece && fullSet[i+3] == piece && fullSet[i+4] == "-"){ // check senario O-OO-
                         if(random.nextInt(2) == 0){
-                            this.freeSpace[0] = rowIdx-i-1;
+                            this.freeSpace[0] = rowIdx-(i-1);
                             this.freeSpace[1] = columnIdx+i+1;
                         } else {
-                            this.freeSpace[0] = rowIdx-i-4;
+                            this.freeSpace[0] = rowIdx-(i-4);
                             this.freeSpace[1] = columnIdx+i+4;
                         }
                         return true;
                     } else if(fullSet[i] == piece && fullSet[i+1] == piece && fullSet[i+2] == "-" && fullSet[i+3] == piece && fullSet[i+4] == "-"){ // check senario OO-O-
                         if(random.nextInt(2) == 0){
-                            this.freeSpace[0] = rowIdx-i-2;
+                            this.freeSpace[0] = rowIdx-(i-2);
                             this.freeSpace[1] = columnIdx+i+2;
                         } else {
-                            this.freeSpace[0] = rowIdx-i-4;
+                            this.freeSpace[0] = rowIdx-(i-4);
                             this.freeSpace[1] = columnIdx+i+4;
                         }
                         return true;
@@ -1148,7 +1155,7 @@ class Pente implements PenteInterface{
                             this.freeSpace[0] = rowIdx-i;
                             this.freeSpace[1] = columnIdx+i;
                         } else {
-                            this.freeSpace[0] = rowIdx-i-2;
+                            this.freeSpace[0] = rowIdx-(i-2);
                             this.freeSpace[1] = columnIdx+i+2;
                         }
                         return true;
@@ -1157,25 +1164,25 @@ class Pente implements PenteInterface{
                             this.freeSpace[0] = rowIdx-i;
                             this.freeSpace[1] = columnIdx+i;
                         } else {
-                            this.freeSpace[0] = rowIdx-i-3;
+                            this.freeSpace[0] = rowIdx-(i-3);
                             this.freeSpace[1] = columnIdx+i+3;
                         }
                         return true;
                     } else if(fullSet[i] == piece && fullSet[i+1] == "-" && fullSet[i+2] == "-" && fullSet[i+3] == piece && fullSet[i+4] == piece){ // check senario O--OO
                         if(random.nextInt(2) == 0){
-                            this.freeSpace[0] = rowIdx-i-1;
+                            this.freeSpace[0] = rowIdx-(i-1);
                             this.freeSpace[1] = columnIdx+i+1;
                         } else {
-                            this.freeSpace[0] = rowIdx-i-2;
+                            this.freeSpace[0] = rowIdx-(i-2);
                             this.freeSpace[1] = columnIdx+i+2;
                         }
                         return true;
                     } else if(fullSet[i] == piece && fullSet[i+1] == piece && fullSet[i+2] == "-" && fullSet[i+3] == "-" && fullSet[i+4] == piece){ // check senario OO--O
                         if(random.nextInt(2) == 0){
-                            this.freeSpace[0] = rowIdx-i-2;
+                            this.freeSpace[0] = rowIdx-(i-2);
                             this.freeSpace[1] = columnIdx+i+2;
                         } else {
-                            this.freeSpace[0] = rowIdx-i-3;
+                            this.freeSpace[0] = rowIdx-(i-3);
                             this.freeSpace[1] = columnIdx+i+3;
                         }
                         return true;
@@ -1545,13 +1552,13 @@ class Pente implements PenteInterface{
                 for(int i = 0; i < fullSet.length-5; i++){ 
                     if(fullSet[i] == piece && fullSet[i+1] == piece && fullSet[i+2] == "-" && fullSet[i+3] == "-" && fullSet[i+4] == "-"){ // check senario OO---
                         if(randomValue == 0){
-                            this.freeSpace[0] = rowIdx-i-2;
+                            this.freeSpace[0] = rowIdx-(i-2);
                             this.freeSpace[1] = columnIdx+i+2;
                         } else if(randomValue == 1){
-                            this.freeSpace[0] = rowIdx-i-3;
+                            this.freeSpace[0] = rowIdx-(i-3);
                             this.freeSpace[1] = columnIdx+i+3;
                         } else {
-                            this.freeSpace[0] = rowIdx-i-4;
+                            this.freeSpace[0] = rowIdx-(i-4);
                             this.freeSpace[1] = columnIdx+i+4;
                         }
                         return true;
@@ -1560,10 +1567,10 @@ class Pente implements PenteInterface{
                             this.freeSpace[0] = rowIdx-i;
                             this.freeSpace[1] = columnIdx+i;
                         } else if(randomValue == 1){
-                            this.freeSpace[0] = rowIdx-i-2;
+                            this.freeSpace[0] = rowIdx-(i-2);
                             this.freeSpace[1] = columnIdx+i+2;
                         } else {
-                            this.freeSpace[0] = rowIdx-i-4;
+                            this.freeSpace[0] = rowIdx-(i-4);
                             this.freeSpace[1] = columnIdx+i+4;
                         }
                         return true;
@@ -1572,34 +1579,34 @@ class Pente implements PenteInterface{
                             this.freeSpace[0] = rowIdx-i-1;
                             this.freeSpace[1] = columnIdx+i+1;
                         } else if(randomValue == 1){
-                            this.freeSpace[0] = rowIdx-i-3;
+                            this.freeSpace[0] = rowIdx-(i-3);
                             this.freeSpace[1] = columnIdx+i+3;
                         } else {
-                            this.freeSpace[0] = rowIdx-i-4;
+                            this.freeSpace[0] = rowIdx-(i-4);
                             this.freeSpace[1] = columnIdx+i+4;
                         }
                         return true;
                     } else if(fullSet[i] == piece && fullSet[i+1] == "-" && fullSet[i+2] == "-" && fullSet[i+3] == piece && fullSet[i+4] == "-"){ // check senario O--O-
                         if(randomValue == 0){
-                            this.freeSpace[0] = rowIdx-i-1;
+                            this.freeSpace[0] = rowIdx-(i-1);
                             this.freeSpace[1] = columnIdx+i+1;
                         } else if(randomValue == 1){
-                            this.freeSpace[0] = rowIdx-i-2;
+                            this.freeSpace[0] = rowIdx-(i-2);
                             this.freeSpace[1] = columnIdx+i+2;
                         } else {
-                            this.freeSpace[0] = rowIdx-i-4;
+                            this.freeSpace[0] = rowIdx-(i-4);
                             this.freeSpace[1] = columnIdx+i+4;
                         }
                         return true;
                     } else if(fullSet[i] == piece && fullSet[i+1] == "-" && fullSet[i+2] == "-" && fullSet[i+3] == "-" && fullSet[i+4] == piece){ // check senario O---O
                         if(randomValue == 0){
-                            this.freeSpace[0] = rowIdx-i-1;
+                            this.freeSpace[0] = rowIdx-(i-1);
                             this.freeSpace[1] = columnIdx+i+1;
                         } else if(randomValue == 1){
-                            this.freeSpace[0] = rowIdx-i-2;
+                            this.freeSpace[0] = rowIdx-(i-2);
                             this.freeSpace[1] = columnIdx+i+2;
                         } else {
-                            this.freeSpace[0] = rowIdx-i-3;
+                            this.freeSpace[0] = rowIdx-(i-3);
                             this.freeSpace[1] = columnIdx+i+3;
                         }
                         return true;
@@ -1608,10 +1615,10 @@ class Pente implements PenteInterface{
                             this.freeSpace[0] = rowIdx-i;
                             this.freeSpace[1] = columnIdx+i;
                         } else if(randomValue == 1){
-                            this.freeSpace[0] = rowIdx-i-3;
+                            this.freeSpace[0] = rowIdx-(i-3);
                             this.freeSpace[1] = columnIdx+i+3;
                         } else {
-                            this.freeSpace[0] = rowIdx-i-4;
+                            this.freeSpace[0] = rowIdx-(i-4);
                             this.freeSpace[1] = columnIdx+i+4;
                         }
                         return true;
@@ -1620,10 +1627,10 @@ class Pente implements PenteInterface{
                             this.freeSpace[0] = rowIdx-i;
                             this.freeSpace[1] = columnIdx+i;
                         } else if(randomValue == 1){
-                            this.freeSpace[0] = rowIdx-i-2;
+                            this.freeSpace[0] = rowIdx-(i-2);
                             this.freeSpace[1] = columnIdx+i+2;
                         } else {
-                            this.freeSpace[0] = rowIdx-i-3;
+                            this.freeSpace[0] = rowIdx-(i-3);
                             this.freeSpace[1] = columnIdx+i+3;
                         }
                         return true;
@@ -1632,10 +1639,10 @@ class Pente implements PenteInterface{
                             this.freeSpace[0] = rowIdx-i;
                             this.freeSpace[1] = columnIdx+i;
                         } else if(randomValue == 1){
-                            this.freeSpace[0] = rowIdx-i-1;
+                            this.freeSpace[0] = rowIdx-(i-1);
                             this.freeSpace[1] = columnIdx+i+1;
                         } else {
-                            this.freeSpace[0] = rowIdx-i-4;
+                            this.freeSpace[0] = rowIdx-(i-4);
                             this.freeSpace[1] = columnIdx+i+4;
                         }
                         return true;
@@ -1644,10 +1651,10 @@ class Pente implements PenteInterface{
                             this.freeSpace[0] = rowIdx-i;
                             this.freeSpace[1] = columnIdx+i;
                         } else if(randomValue == 1){
-                            this.freeSpace[0] = rowIdx-i-1;
+                            this.freeSpace[0] = rowIdx-(i-1);
                             this.freeSpace[1] = columnIdx+i+1;
                         } else {
-                            this.freeSpace[0] = rowIdx-i-3;
+                            this.freeSpace[0] = rowIdx-(i-3);
                             this.freeSpace[1] = columnIdx+i+3;
                         }
                         return true;
@@ -1656,10 +1663,10 @@ class Pente implements PenteInterface{
                             this.freeSpace[0] = rowIdx-i;
                             this.freeSpace[1] = columnIdx+i;
                         } else if(randomValue == 1){
-                            this.freeSpace[0] = rowIdx-i-1;
+                            this.freeSpace[0] = rowIdx-(i-1);
                             this.freeSpace[1] = columnIdx+i+1;
                         } else {
-                            this.freeSpace[0] = rowIdx-i-2;
+                            this.freeSpace[0] = rowIdx-(i-2);
                             this.freeSpace[1] = columnIdx+i+2;
                         }
                         return true;
@@ -1914,16 +1921,16 @@ class Pente implements PenteInterface{
                 for(int i = 0; i < fullSet.length-5; i++){ 
                     if(fullSet[i] == piece && fullSet[i+1] == "-" && fullSet[i+2] == "-" && fullSet[i+3] == "-" && fullSet[i+4] == "-"){ // check senario O----
                         if(randomValue == 0){
-                            this.freeSpace[0] = rowIdx-i-1;
+                            this.freeSpace[0] = rowIdx-(i-1);
                             this.freeSpace[1] = columnIdx+i+1;
                         } else if(randomValue == 1){
-                            this.freeSpace[0] = rowIdx-i-2;
+                            this.freeSpace[0] = rowIdx-(i-2);
                             this.freeSpace[1] = columnIdx+i+2;
                         } else if(randomValue == 2){
-                            this.freeSpace[0] = rowIdx-i-3;
+                            this.freeSpace[0] = rowIdx-(i-3);
                             this.freeSpace[1] = columnIdx+i+3;
                         } else {
-                            this.freeSpace[0] = rowIdx-i-4;
+                            this.freeSpace[0] = rowIdx-(i-4);
                             this.freeSpace[1] = columnIdx+i+4;
                         }
                         return true;
@@ -1932,13 +1939,13 @@ class Pente implements PenteInterface{
                             this.freeSpace[0] = rowIdx-i;
                             this.freeSpace[1] = columnIdx+i;
                         } else if(randomValue == 1){
-                            this.freeSpace[0] = rowIdx-i-2;
+                            this.freeSpace[0] = rowIdx-(i-2);
                             this.freeSpace[1] = columnIdx+i+2;
                         } else if(randomValue == 2){
-                            this.freeSpace[0] = rowIdx-i-3;
+                            this.freeSpace[0] = rowIdx-(i-3);
                             this.freeSpace[1] = columnIdx+i+3;
                         } else {
-                            this.freeSpace[0] = rowIdx-i-4;
+                            this.freeSpace[0] = rowIdx-(i-4);
                             this.freeSpace[1] = columnIdx+i+4;
                         }
                         return true;
@@ -1947,13 +1954,13 @@ class Pente implements PenteInterface{
                             this.freeSpace[0] = rowIdx-i;
                             this.freeSpace[1] = columnIdx+i;
                         } else if(randomValue == 1){
-                            this.freeSpace[0] = rowIdx-i-1;
+                            this.freeSpace[0] = rowIdx-(i-1);
                             this.freeSpace[1] = columnIdx+i+1;
                         } else if(randomValue == 2){
-                            this.freeSpace[0] = rowIdx-i-3;
+                            this.freeSpace[0] = rowIdx-(i-3);
                             this.freeSpace[1] = columnIdx+i+3;
                         } else {
-                            this.freeSpace[0] = rowIdx-i-4;
+                            this.freeSpace[0] = rowIdx-(i-4);
                             this.freeSpace[1] = columnIdx+i+4;
                         }
                         return true;
@@ -1962,13 +1969,13 @@ class Pente implements PenteInterface{
                             this.freeSpace[0] = rowIdx-i;
                             this.freeSpace[1] = columnIdx+i;
                         } else if(randomValue == 1){
-                            this.freeSpace[0] = rowIdx-i-1;
+                            this.freeSpace[0] = rowIdx-(i-1);
                             this.freeSpace[1] = columnIdx+i+1;
                         } else if(randomValue == 2){
-                            this.freeSpace[0] = rowIdx-i-2;
+                            this.freeSpace[0] = rowIdx-(i-2);
                             this.freeSpace[1] = columnIdx+i+2;
                         } else {
-                            this.freeSpace[0] = rowIdx-i-4;
+                            this.freeSpace[0] = rowIdx-(i-4);
                             this.freeSpace[1] = columnIdx+i+4;
                         }
                         return true;
@@ -1977,13 +1984,13 @@ class Pente implements PenteInterface{
                             this.freeSpace[0] = rowIdx-i;
                             this.freeSpace[1] = columnIdx+i;
                         } else if(randomValue == 1){
-                            this.freeSpace[0] = rowIdx-i-1;
+                            this.freeSpace[0] = rowIdx-(i-1);
                             this.freeSpace[1] = columnIdx+i+1;
                         } else if(randomValue == 2){
-                            this.freeSpace[0] = rowIdx-i-2;
+                            this.freeSpace[0] = rowIdx-(i-2);
                             this.freeSpace[1] = columnIdx+i+2;
                         } else {
-                            this.freeSpace[0] = rowIdx-i-3;
+                            this.freeSpace[0] = rowIdx-(i-3);
                             this.freeSpace[1] = columnIdx+i+3;
                         }
                         return true;
