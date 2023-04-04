@@ -1,3 +1,10 @@
+/*
+ * Thinking through strategic placement of pieces
+ * * if there is a row and one side is blocked the new piece should not go in the same row, but should intersect with it
+ * * if it is possible to make a 2x2 or 3x3 square then that should happen
+ * May need a seperate strategicPlacement method for each -inFive method
+ */
+
 import java.util.Random;
 
 class Pente implements PenteInterface{
@@ -84,7 +91,9 @@ class Pente implements PenteInterface{
             checkIfCaptured(this.freeSpace[0], this.freeSpace[1], "O");
         } else if(playerCanWin()){
             // block win
-            // check if a block via capture can be made NOT IMPLEMENTED
+            // check if a block via capture can be made, particularly if neither side is blocked NOT IMPLEMENTED
+            // if the player has four uninterupted pieces, only block if one side is already blocked 
+            // if the pieces are interrupted block within the interuption
             this.board[this.freeSpace[0]][this.freeSpace[1]] = "O";
             checkIfCaptured(this.freeSpace[0], this.freeSpace[1], "O");
         } else if(playerHasThree()){
@@ -120,6 +129,7 @@ class Pente implements PenteInterface{
         } else {
             // if no other conditions were met, place in a random piece
             // checking there are not pieces in that spot
+            // make sure there are 4 blank spaces around that piece NOT IMPLEMENTED
             int randomRow = random.nextInt(19);
             int randomColumn = random.nextInt(19);
             while(this.board[randomRow][randomColumn].equals("X") || this.board[randomRow][randomColumn].equals("O")){
@@ -221,18 +231,9 @@ class Pente implements PenteInterface{
         }
     }
 
-    private boolean computerCanWin(){ 
-        // check for four "O" in a row with a free space on one side
-        if(findRowOfN(4, "O")){
-            return true;
-        } else if(findColumnOfN(4, "O")){
-            return true;
-        } else if(findDiagonalDownOfN(4, "O")){
-            return true;
-        } else if(findDiagonalUpOfN(4, "O")){
-            return true;
-        // checking for OO-OO, O-OOO, OOO-O in rows, columns, and diagonals
-        } else if(setOfFourinFive("row", "O")){
+    private boolean computerCanWin(){
+        // checking for -OOOO, OOOO-, OO-OO, O-OOO, OOO-O in rows, columns, and diagonals
+        if(setOfFourinFive("row", "O")){
             return true;
         } else if(setOfFourinFive("column", "O")){
             return true;
@@ -377,10 +378,16 @@ class Pente implements PenteInterface{
                     this.freeSpace[1] = i-(n+1);
                 }
                 return true;
-            } else if(n == 4 && numInRow == n && row[i] == "-"){ // four in a row with a free space to the right
+            } else if(i == 4 && n == 4 && numInRow == n && row[i] == "-"){ // four in a row with a free space to the right, left is the wall
                 this.freeSpace[1] = i;
                 return true;
-            } else if(i > 4 && n == 4 && numInRow == n && row[i-5] == "-"){ // four in a row with a free space to the left
+            } else if(i == 18 && n == 4 && numInRow == 3 && row[i] == piece && row[i-4] == "-"){ // four in a row with a free space to the left, right is wall
+                this.freeSpace[1] = i-5;
+                return true;
+            } else if(i > 4 && n == 4 && numInRow == n && row[i] == "-" && row[i-5] == opposingPiece){ // four in a row with a free space to the right, left is blocked
+                this.freeSpace[1] = i;
+                return true;
+            } else if(i > 4 && n == 4 && numInRow == n && row[i] == opposingPiece && row[i-5] == "-"){ // four in a row with a free space to the left, right is blocked
                 this.freeSpace[1] = i-5;
                 return true;
             }  else if(i > 2 && n == 2 && numInRow == n && row[i] == "-" && row[i-3] == opposingPiece){ // two in a row with a free space to the right and the opposing peice to the left
@@ -443,13 +450,19 @@ class Pente implements PenteInterface{
                     this.freeSpace[0] = i-(n+1);
                 }
                 return true;
-            } else if(n == 4 && numInColumn == n && column[i] == "-"){ // 4 in a column with a free space on the bottom
+            } else if(i == 4 && n == 4 && numInColumn == n && column[i] == "-"){ // 4 in a column with a free space on the bottom, the top is the wall
                 this.freeSpace[0] = i;
                 return true;
-            } else if(i > 4 && n == 4 && numInColumn == n && column[i-5] == "-"){ // 4 in a column with a free space on the top
+            } else if(i == 18 && n == 4 && numInColumn == 3 && column[i] == piece && column[i-4] == "-"){ // 4 in a column with a free space on the top, the bottom is the wall
                 this.freeSpace[0] = i-(n+1);
                 return true;
-            }  else if(i > 2 && n == 2 && numInColumn == n && column[i] == "-" && column[i-3] == opposingPiece){ // two in a column with a free space on the bottom and the opposing peice on top
+            } else if(i > 4 && n == 4 && numInColumn == n && column[i] == "-" && column[i-5] == opposingPiece){ // 4 in a column with a free space on the bottom, the top the opposing piece
+                this.freeSpace[0] = i;
+                return true;
+            } else if(i > 4 && n == 4 && numInColumn == n && column[i] == opposingPiece && column[i-5] == "-"){ // 4 in a column with a free space on the top and an opposing piece on bottom
+                this.freeSpace[0] = i-(n+1);
+                return true;
+            } else if(i > 2 && n == 2 && numInColumn == n && column[i] == "-" && column[i-3] == opposingPiece){ // two in a column with a free space on the bottom and the opposing peice on top
                 this.freeSpace[0] = i;
                 this.captivePieceOne[0] = i-1;
                 this.captivePieceTwo[0] = i-2;
@@ -560,11 +573,19 @@ class Pente implements PenteInterface{
                     this.freeSpace[1] = columnIdx+i-4;
                 }
                 return true;
-            } else if(n == 4 && numInDiagonal == n && diagonal[i] == "-"){ // 4 in a diagonal with a free space on the bottom right
+            } else if(i == 4 && n == 4 && numInDiagonal == n && diagonal[i] == "-"){ // 4 in a diagonal with a free space on the bottom right, top left is the wall
                 this.freeSpace[0] = rowIdx+i;
                 this.freeSpace[1] = columnIdx+i;
                 return true;
-            } else if(i > 4 && n == 4 && numInDiagonal == n && diagonal[i-5] == "-"){ // 4 in a downward diagonal with a free space on the top left
+            } else if(i > 4 && n == 4 && numInDiagonal == n && diagonal[i] == "-" && diagonal[i-5] == opposingPiece){ // 4 in a diagonal with a free space on the bottom right, top left is blocked
+                this.freeSpace[0] = rowIdx+i;
+                this.freeSpace[1] = columnIdx+i;
+                return true;
+            } else if(i == diagonal.length-1 && n == 4 && numInDiagonal == 3 && diagonal[i] == piece && diagonal[i-4] == opposingPiece){ // 4 in a downward diagonal with a free space on the top left, bottom right is the wall
+                this.freeSpace[0] = rowIdx+i-4;
+                this.freeSpace[1] = columnIdx+i-4;
+                return true;
+            } else if(i > 4 && n == 4 && numInDiagonal == n && diagonal[i] == opposingPiece && diagonal[i-5] == "-"){ // 4 in a downward diagonal with a free space on the top left, bottom right is blocked
                 this.freeSpace[0] = rowIdx+i-5;
                 this.freeSpace[1] = columnIdx+i-5;
                 return true;
@@ -685,15 +706,23 @@ class Pente implements PenteInterface{
                     this.freeSpace[1] = columnIdx+i+4;
                 }
                 return true;
-            } else if(n == 4 && numInDiagonal == n && diagonal[i] == "-"){ // 4 in a upward diagonal with a free space on the bottom left
+            } else if(i == 4 && n == 4 && numInDiagonal == n && diagonal[i] == "-"){ // 4 in a diagonal with a free space on the top right, bottom left is the wall
                 this.freeSpace[0] = rowIdx-i;
                 this.freeSpace[1] = columnIdx+i;
                 return true;
-            } else if(i > 4 && n == 4 && numInDiagonal == n && diagonal[i-5] == "-"){ // 4 in a upward diagonal with a free space on the top right
+            } else if(i > 4 && n == 4 && numInDiagonal == n && diagonal[i] == "-" && diagonal[i-5] == opposingPiece){ // 4 in a diagonal with a free space on the top right, bottom left is blocked
+                this.freeSpace[0] = rowIdx-i;
+                this.freeSpace[1] = columnIdx+i;
+                return true;
+            } else if(i == diagonal.length-1 && n == 4 && numInDiagonal == 3 && diagonal[i] == piece && diagonal[i-4] == opposingPiece){ // 4 in a downward diagonal with a free space on the bottom left, top right is the wall
+                this.freeSpace[0] = rowIdx-(i-4);
+                this.freeSpace[1] = columnIdx+i+4;
+                return true;
+            } else if(i > 4 && n == 4 && numInDiagonal == n && diagonal[i] == opposingPiece && diagonal[i-5] == "-"){ // 4 in a downward diagonal with a free space on the bottom left, top right is blocked
                 this.freeSpace[0] = rowIdx-(i-5);
                 this.freeSpace[1] = columnIdx+i+5;
                 return true;
-            }  else if(i > 2 && n == 2 && numInDiagonal == n && diagonal[i] == "-" && diagonal[i-3] == opposingPiece){ // two in a upward diagonal with a free space on the bottom left and the opposing peice on top right
+            } else if(i > 2 && n == 2 && numInDiagonal == n && diagonal[i] == "-" && diagonal[i-3] == opposingPiece){ // two in a upward diagonal with a free space on the bottom left and the opposing peice on top right
                 this.freeSpace[0] = rowIdx-i;
                 this.freeSpace[1] = columnIdx+i;
                 this.captivePieceOne[0] = rowIdx-(i-1);
@@ -737,7 +766,13 @@ class Pente implements PenteInterface{
                     } else if(fullSet[i] == piece && fullSet[i+1] == "-" && fullSet[i+2] == piece && fullSet[i+3] == piece && fullSet[i+4] == piece){ // check senario O-OOO
                         this.freeSpace[1] = i+1;
                         return true;
-                    }  
+                    } else if(fullSet[i] == "-" && fullSet[i+1] == piece && fullSet[i+2] == piece && fullSet[i+3] == piece && fullSet[i+4] == piece){ // check senario -OOOO
+                        this.freeSpace[1] = i;
+                        return true;
+                    } else if(fullSet[i] == piece && fullSet[i+1] == piece && fullSet[i+2] == piece && fullSet[i+3] == piece && fullSet[i+4] == "-"){ // check senario OOOO-
+                        this.freeSpace[1] = i+4;
+                        return true;
+                    }
                 }
             }
             return false;
@@ -756,7 +791,13 @@ class Pente implements PenteInterface{
                     } else if(fullSet[i] == piece && fullSet[i+1] == "-" && fullSet[i+2] == piece && fullSet[i+3] == piece && fullSet[i+4] == piece){ // check senario O-OOO
                         this.freeSpace[0] = i+1;
                         return true;
-                    }  
+                    }  else if(fullSet[i] == "-" && fullSet[i+1] == piece && fullSet[i+2] == piece && fullSet[i+3] == piece && fullSet[i+4] == piece){ // check senario -OOOO
+                        this.freeSpace[0] = i;
+                        return true;
+                    } else if(fullSet[i] == piece && fullSet[i+1] == piece && fullSet[i+2] == piece && fullSet[i+3] == piece && fullSet[i+4] == "-"){ // check senario OOOO-
+                        this.freeSpace[0] = i+4;
+                        return true;
+                    }
                 }
             } 
             return false;   
@@ -785,7 +826,15 @@ class Pente implements PenteInterface{
                         this.freeSpace[0] = rowIdx+i+1;
                         this.freeSpace[1] = columnIdx+i+1;
                         return true;
-                    }  
+                    } else if(fullSet[i] == "-" && fullSet[i+1] == piece && fullSet[i+2] == piece && fullSet[i+3] == piece && fullSet[i+4] == piece){ // check senario -OOOO
+                        this.freeSpace[0] = rowIdx+i;
+                        this.freeSpace[1] = columnIdx+i;
+                        return true;
+                    } else if(fullSet[i] == piece && fullSet[i+1] == piece && fullSet[i+2] == piece && fullSet[i+3] == piece && fullSet[i+4] == "-"){ // check senario OOOO-
+                        this.freeSpace[0] = rowIdx+i+4;
+                        this.freeSpace[1] = columnIdx+i+4;
+                        return true;
+                    }
                 }
             }
             return false;
@@ -814,7 +863,15 @@ class Pente implements PenteInterface{
                         this.freeSpace[0] = rowIdx-(i-1);
                         this.freeSpace[1] = columnIdx+i+1;
                         return true;
-                    }  
+                    } else if(fullSet[i] == "-" && fullSet[i+1] == piece && fullSet[i+2] == piece && fullSet[i+3] == piece && fullSet[i+4] == piece){ // check senario -OOOO
+                        this.freeSpace[0] = rowIdx-i;
+                        this.freeSpace[1] = columnIdx+i;
+                        return true;
+                    } else if(fullSet[i] == piece && fullSet[i+1] == piece && fullSet[i+2] == piece && fullSet[i+3] == piece && fullSet[i+4] == "-"){ // check senario OOOO-
+                        this.freeSpace[0] = rowIdx-(i-4);
+                        this.freeSpace[1] = columnIdx+i+4;
+                        return true;
+                    }
                 }
             }
             return false;
