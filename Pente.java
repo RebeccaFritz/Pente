@@ -89,6 +89,10 @@ class Pente implements PenteInterface{
             // if the pieces are interrupted block within the interuption
             this.board[this.freeSpace[0]][this.freeSpace[1]] = "O";
             checkIfCaptured(this.freeSpace[0], this.freeSpace[1], "O");
+        } else if(computerHasThreeInARow()){
+            // check if the computer has three in a row
+	        // if not blocked, make four
+            this.board[this.freeSpace[0]][this.freeSpace[1]] = "O";
         } else if(playerHasThree()){
             // check if the opponent has three in a row with a blank space on either side
             // if so, block three
@@ -284,11 +288,23 @@ class Pente implements PenteInterface{
     }
     }
 
-    private boolean computerHasThree(){ 
+    private boolean computerHasThreeInARow(){ 
         if(findRowOfN(3, "O")){ // check for three "O" in a row with free space on both sides
             return true;
-    // check senarios O-O-O, OOO--, -OOO-, --OOO, OO-O-, O-OO-, -O-OO, -OO-O for rows, columns, and diagonals
-        } else if(setOfThreeinFive("row", "O")){ 
+        } else if(findColumnOfN(3, "O")){
+            return true;
+        } else if(findDiagonalDownOfN(3, "O")){
+            return true;
+        } else if(findDiagonalUpOfN(3, "O")){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private boolean computerHasThree(){ 
+        // check senarios O-O-O, OOO--, -OOO-, --OOO, OO-O-, O-OO-, -O-OO, -OO-O for rows, columns, and diagonals
+        if(setOfThreeinFive("row", "O")){ 
             return true;
         } else if(setOfThreeinFive("column", "O")){ 
             return true;
