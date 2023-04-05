@@ -129,10 +129,10 @@ class Pente implements PenteInterface{
         } else {
             // if no other conditions were met, place in a random piece
             // checking there are not pieces in that spot
-            // make sure there are 4 blank spaces around that piece NOT IMPLEMENTED
+            // make sure there are 4 blank spaces around that piece 
             int randomRow = random.nextInt(19);
             int randomColumn = random.nextInt(19);
-            while(this.board[randomRow][randomColumn].equals("X") || this.board[randomRow][randomColumn].equals("O")){
+            while(!isEmptySetOfFive(randomRow, randomColumn)){
                 randomRow = random.nextInt(19);
                 randomColumn = random.nextInt(19);
             } 
@@ -2066,6 +2066,54 @@ class Pente implements PenteInterface{
                 }
             }
             return false;
+        } else {
+            return false;
+        }
+    }
+
+    private boolean isEmptySetOfFive(int row, int column){
+        if(this.board[row][column].equals("X") || this.board[row][column].equals("O")){
+            return false;
+        } else if(row < 15 && this.board[row+1][column].equals("-") && this.board[row+2][column].equals("-") && this.board[row+3][column].equals("-") && this.board[row+4][column].equals("-")){ // row: checking for four empty spots after the piece
+            return true;
+        } else if(column < 15 && this.board[row][column+1].equals("-") && this.board[row][column+2].equals("-") && this.board[row][column+3].equals("-") && this.board[row][column+4].equals("-")){ // column: checking for four empty spots after the piece
+            return true;
+        } else if(row < 15 && column < 15 && this.board[row+1][column+1].equals("-") && this.board[row+2][column+2].equals("-") && this.board[row+3][column+3].equals("-") && this.board[row+4][column+4].equals("-")){ // diagonalUp: checking for four empty spots after the piece
+            return true;
+        } else if(row > 3 && column < 15 && this.board[row-1][column+1].equals("-") && this.board[row-2][column+2].equals("-") && this.board[row-3][column+3].equals("-") && this.board[row-4][column+4].equals("-")){ // diagonalDown: checking for four empty spots after the piece
+            return true;
+        } else if(row > 0 && row < 16 && this.board[row-1][column].equals("-") && this.board[row+1][column].equals("-") && this.board[row+2][column].equals("-") && this.board[row+3][column].equals("-")){ // row: checking for one empty spot before and three empty spots after the piece
+            return true;
+        } else if(column > 0 && column < 16 && this.board[row][column-1].equals("-") && this.board[row][column+1].equals("-") && this.board[row][column+2].equals("-") && this.board[row][column+3].equals("-")){ // column: checking for one empty spot before and three empty spots after the piece
+            return true;
+        } else if(row > 0 && row < 16 && column > 0 && column < 16 && this.board[row-1][column-1].equals("-") && this.board[row+1][column+1].equals("-") && this.board[row+2][column+2].equals("-") && this.board[row+3][column+3].equals("-")){ // diagonalUp: checking one empty spot before and three empty spots after the piece
+            return true;
+        } else if(row > 2 && row < 16 && column > 0 && column < 16 && this.board[row+1][column-1].equals("-") && this.board[row-1][column+1].equals("-") && this.board[row-2][column+2].equals("-") && this.board[row-3][column+3].equals("-")){ // diagonalDown: checking one empty spot before and three empty spots after the piece
+            return true;
+        } else if(row > 1 && row < 17 && this.board[row-2][column].equals("-") && this.board[row-1][column].equals("-") && this.board[row+1][column].equals("-") && this.board[row+2][column].equals("-")){ // row: checking for two empty spots before and two empty spots after the piece
+            return true;
+        } else if(column > 1 && column < 17 && this.board[row][column-2].equals("-") && this.board[row][column-1].equals("-") && this.board[row][column+1].equals("-") && this.board[row][column+2].equals("-")){ // column: checking for two empty spots before and two empty spots after the piece
+            return true;
+        } else if(row > 1 && row < 17 && column > 1 && column < 17 && this.board[row-2][column-2].equals("-") && this.board[row-1][column-1].equals("-") && this.board[row+1][column+1].equals("-") && this.board[row+2][column+2].equals("-")){ // diagonalUp: checking for two empty spots before and two empty spots after the piece
+            return true;
+        } else if(row > 1 && row < 17 && column > 1 && column < 17 && this.board[row+2][column-2].equals("-") && this.board[row+1][column-1].equals("-") && this.board[row-1][column+1].equals("-") && this.board[row-2][column+2].equals("-")){ // diagonalDown: checking for two empty spots before and two empty spots after the piece
+            return true;
+        } else if(row > 2 && row < 18 && this.board[row-3][column].equals("-") && this.board[row-2][column].equals("-") && this.board[row-1][column].equals("-") && this.board[row+1][column].equals("-")){ // row: checking for three empty spots before and one empty spot after the piece
+            return true;
+        } else if(column > 2 && column < 18 && this.board[row][column-3].equals("-") && this.board[row][column-2].equals("-") && this.board[row][column-1].equals("-") && this.board[row][column+1].equals("-")){ // column: checking for three empty spots before and one empty spot after the piece
+            return true;
+        } else if(row > 2 && row < 18 && column > 2 && column < 18 && this.board[row-3][column-3].equals("-") && this.board[row-2][column-2].equals("-") && this.board[row-1][column-1].equals("-") && this.board[row+1][column+1].equals("-")){ // diagonalUp: checking for three empty spots before and one empty spot after the piece
+            return true;
+        } else if(row > 0 && row < 16 && column > 2 && column < 18 && this.board[row+3][column-3].equals("-") && this.board[row+2][column-2].equals("-") && this.board[row+1][column-1].equals("-") && this.board[row-1][column+1].equals("-")){ // diagonalDown: checking for three empty spots before and one empty spot after the piece
+            return true;
+        } else if(row > 3 && this.board[row-4][column].equals("-") && this.board[row-3][column].equals("-") && this.board[row-2][column].equals("-") && this.board[row-1][column].equals("-")){ // row: checking for four empty spots after the piece
+            return true;
+        } else if(column > 3 && this.board[row][column-4].equals("-") && this.board[row][column-3].equals("-") && this.board[row][column-2].equals("-") && this.board[row][column-1].equals("-")){ // column: checking for four empty spots after the piece the piece
+            return true;
+        } else if(row > 3 && column > 3 && this.board[row-4][column-4].equals("-") && this.board[row-3][column-3].equals("-") && this.board[row-2][column-2].equals("-") && this.board[row-1][column-1].equals("-")){ // diagonalUp: checking for four empty spots after the piece
+            return true;
+        } else if(row < 15 && column > 3 && this.board[row+4][column-4].equals("-") && this.board[row+3][column-3].equals("-") && this.board[row+2][column-2].equals("-") && this.board[row+1][column-1].equals("-")){ // diagonalDown: checking for four empty spots after the piece
+            return true;
         } else {
             return false;
         }
