@@ -382,7 +382,7 @@ class Pente implements PenteInterface{
                 this.freeSpace[1] = i;
                 return true;
             } else if(i == 18 && n == 4 && numInRow == 3 && row[i] == piece && row[i-4] == "-"){ // four in a row with a free space to the left, right is wall
-                this.freeSpace[1] = i-5;
+                this.freeSpace[1] = i-4;
                 return true;
             } else if(i > 4 && n == 4 && numInRow == n && row[i] == "-" && row[i-5] == opposingPiece){ // four in a row with a free space to the right, left is blocked
                 this.freeSpace[1] = i;
@@ -454,13 +454,13 @@ class Pente implements PenteInterface{
                 this.freeSpace[0] = i;
                 return true;
             } else if(i == 18 && n == 4 && numInColumn == 3 && column[i] == piece && column[i-4] == "-"){ // 4 in a column with a free space on the top, the bottom is the wall
-                this.freeSpace[0] = i-(n+1);
+                this.freeSpace[0] = i-4;
                 return true;
             } else if(i > 4 && n == 4 && numInColumn == n && column[i] == "-" && column[i-5] == opposingPiece){ // 4 in a column with a free space on the bottom, the top the opposing piece
                 this.freeSpace[0] = i;
                 return true;
             } else if(i > 4 && n == 4 && numInColumn == n && column[i] == opposingPiece && column[i-5] == "-"){ // 4 in a column with a free space on the top and an opposing piece on bottom
-                this.freeSpace[0] = i-(n+1);
+                this.freeSpace[0] = i-5;
                 return true;
             } else if(i > 2 && n == 2 && numInColumn == n && column[i] == "-" && column[i-3] == opposingPiece){ // two in a column with a free space on the bottom and the opposing peice on top
                 this.freeSpace[0] = i;
@@ -581,7 +581,7 @@ class Pente implements PenteInterface{
                 this.freeSpace[0] = rowIdx+i;
                 this.freeSpace[1] = columnIdx+i;
                 return true;
-            } else if(i == diagonal.length-1 && n == 4 && numInDiagonal == 3 && diagonal[i] == piece && diagonal[i-4] == opposingPiece){ // 4 in a downward diagonal with a free space on the top left, bottom right is the wall
+            } else if(i == diagonal.length-1 && n == 4 && numInDiagonal == 3 && diagonal[i] == piece && diagonal[i-4] == "-"){ // 4 in a downward diagonal with a free space on the top left, bottom right is the wall
                 this.freeSpace[0] = rowIdx+i-4;
                 this.freeSpace[1] = columnIdx+i-4;
                 return true;
