@@ -139,7 +139,7 @@ class Pente implements PenteInterface{
         // determine the column
         int column = 0;
         for(int i = 0; i < 19; i++){
-            if(columnLabels[i].equals(columnLetter)) column = i;
+            if(this.columnLabels[i].equals(columnLetter)) column = i;
         }
 
         if(this.board[row][column].equals("X") || this.board[row][column].equals("O")){
@@ -1216,7 +1216,7 @@ class Pente implements PenteInterface{
                         }
                         return true;
                     } else if(fullSet[i] == "-" && fullSet[i+1] == "-" && fullSet[i+2] == piece && fullSet[i+3] == piece && fullSet[i+4] == "-"){ // check senario --OO-
-                        if(i < 14 && fullSet[i+5] == "-") { // only choose this spot if the right is not blocked
+                        if(fullSet[i+5] == "-") { // only choose this spot if the right is not blocked
                             this.freeSpace[1] = i+4;
                         } else {
                             this.freeSpace[1] = i+1;
@@ -1225,7 +1225,7 @@ class Pente implements PenteInterface{
                     } else if(fullSet[i] == "-" && fullSet[i+1] == "-" && fullSet[i+2] == piece && fullSet[i+3] == "-" && fullSet[i+4] == piece){ // check senario --O-O
                         this.freeSpace[1] = i+3;
                         return true;
-                    } else if(i > 14 && fullSet[i] == "-" && fullSet[i+1] == "-" && fullSet[i+2] == "-" && fullSet[i+3] == piece && fullSet[i+4] == piece && fullSet[i+5] == "-"){ // check senario ---OO, making sure the right is not blocked
+                    } else if(fullSet[i] == "-" && fullSet[i+1] == "-" && fullSet[i+2] == "-" && fullSet[i+3] == piece && fullSet[i+4] == piece && fullSet[i+5] == "-"){ // check senario ---OO, making sure the right is not blocked
                         this.freeSpace[1] = i+2;
                         return true;
                     }
@@ -1282,16 +1282,16 @@ class Pente implements PenteInterface{
                         }
                         return true;
                     } else if(fullSet[i] == "-" && fullSet[i+1] == "-" && fullSet[i+2] == piece && fullSet[i+3] == piece && fullSet[i+4] == "-"){ // check senario --OO-
-                        if(i < 14 && fullSet[i+5] == "-"){ // only choose this spot if the right is not blocked
+                        if(fullSet[i+5] == "-"){ // only choose this spot if the right is not blocked
                             this.freeSpace[0] = i+4;
                         } else {
                             this.freeSpace[0] = i+1;
                         } 
                         return true;
-                    } else if(i < 14 && fullSet[i] == "-" && fullSet[i+1] == "-" && fullSet[i+2] == piece && fullSet[i+3] == "-" && fullSet[i+4] == piece && fullSet[i+5] == "-"){ // check senario --O-O, making sure the right is not blocked
+                    } else if(fullSet[i] == "-" && fullSet[i+1] == "-" && fullSet[i+2] == piece && fullSet[i+3] == "-" && fullSet[i+4] == piece && fullSet[i+5] == "-"){ // check senario --O-O, making sure the right is not blocked
                         this.freeSpace[0] = i+3;
                         return true;
-                    } else if(i < 14 && fullSet[i] == "-" && fullSet[i+1] == "-" && fullSet[i+2] == "-" && fullSet[i+3] == piece && fullSet[i+4] == piece && fullSet[i+5] == "-"){ // check senario ---OO, making sure the right is not blocked
+                    } else if(fullSet[i] == "-" && fullSet[i+1] == "-" && fullSet[i+2] == "-" && fullSet[i+3] == piece && fullSet[i+4] == piece && fullSet[i+5] == "-"){ // check senario ---OO, making sure the right is not blocked
                         this.freeSpace[0] = i+2;
                         return true;
                     } 
@@ -1369,7 +1369,7 @@ class Pente implements PenteInterface{
                         }
                         return true;
                     } else if(fullSet[i] == "-" && fullSet[i+1] == "-" && fullSet[i+2] == piece && fullSet[i+3] == piece && fullSet[i+4] == "-"){ // check senario --OO-
-                        if(i < 14 && fullSet[i+5] == "-"){ // only choose this spot if the right is not blocked
+                        if(fullSet[i+5] == "-"){ // only choose this spot if the right is not blocked
                             this.freeSpace[0] = rowIdx+i+4;
                             this.freeSpace[1] = columnIdx+i+4;
                         } else {
@@ -1377,11 +1377,11 @@ class Pente implements PenteInterface{
                             this.freeSpace[1] = columnIdx+i+1;
                         } 
                         return true;
-                    } else if(i < 14 && fullSet[i] == "-" && fullSet[i+1] == "-" && fullSet[i+2] == piece && fullSet[i+3] == "-" && fullSet[i+4] == piece && fullSet[i+5] == "-"){ // check senario --O-O, making sure the right is not blocked
+                    } else if(fullSet[i] == "-" && fullSet[i+1] == "-" && fullSet[i+2] == piece && fullSet[i+3] == "-" && fullSet[i+4] == piece && fullSet[i+5] == "-"){ // check senario --O-O, making sure the right is not blocked
                         this.freeSpace[0] = rowIdx+i+3;
                         this.freeSpace[1] = columnIdx+i+3;
                         return true;
-                    } else if(i < 14 && fullSet[i] == "-" && fullSet[i+1] == "-" && fullSet[i+2] == "-" && fullSet[i+3] == piece && fullSet[i+4] == piece && fullSet[i+5] == "-"){ // check senario ---OO, making sure the right is not blocked
+                    } else if(fullSet[i] == "-" && fullSet[i+1] == "-" && fullSet[i+2] == "-" && fullSet[i+3] == piece && fullSet[i+4] == piece && fullSet[i+5] == "-"){ // check senario ---OO, making sure the right is not blocked
                         this.freeSpace[0] = rowIdx+i+2;
                         this.freeSpace[1] = columnIdx+i+2;
                         return true;
@@ -1460,7 +1460,7 @@ class Pente implements PenteInterface{
                         }
                         return true;
                     } else if(fullSet[i] == "-" && fullSet[i+1] == "-" && fullSet[i+2] == piece && fullSet[i+3] == piece && fullSet[i+4] == "-"){ // check senario --OO-
-                        if(i < 14 && fullSet[i+5] == "-"){ // only choose this spot if the right is not blocked
+                        if(fullSet[i+5] == "-"){ // only choose this spot if the right is not blocked
                             this.freeSpace[0] = rowIdx-(i-4);
                             this.freeSpace[1] = columnIdx+i+4;
                         } else {
@@ -1468,11 +1468,11 @@ class Pente implements PenteInterface{
                             this.freeSpace[1] = columnIdx+i+1;
                         }
                         return true;
-                    } else if(i < 14 && fullSet[i] == "-" && fullSet[i+1] == "-" && fullSet[i+2] == piece && fullSet[i+3] == "-" && fullSet[i+4] == piece && fullSet[i+5] == "-"){ // check senario --O-O, making sure the right is not blocked
+                    } else if(fullSet[i] == "-" && fullSet[i+1] == "-" && fullSet[i+2] == piece && fullSet[i+3] == "-" && fullSet[i+4] == piece && fullSet[i+5] == "-"){ // check senario --O-O, making sure the right is not blocked
                         this.freeSpace[0] = rowIdx-(i-3);
                         this.freeSpace[1] = columnIdx+i+3;
                         return true;
-                    } else if(i < 14 && fullSet[i] == "-" && fullSet[i+1] == "-" && fullSet[i+2] == "-" && fullSet[i+3] == piece && fullSet[i+4] == piece && fullSet[i+5] == "-"){ // check senario ---OO, making sure the right is not blocked
+                    } else if(fullSet[i] == "-" && fullSet[i+1] == "-" && fullSet[i+2] == "-" && fullSet[i+3] == piece && fullSet[i+4] == piece && fullSet[i+5] == "-"){ // check senario ---OO, making sure the right is not blocked
                         this.freeSpace[0] = rowIdx-(i-2);
                         this.freeSpace[1] = columnIdx+i+2;
                         return true;
@@ -1514,13 +1514,13 @@ class Pente implements PenteInterface{
                         } 
                         return true;
                     } else if(fullSet[i] == "-" && fullSet[i+1] == "-" && fullSet[i+2] == "-" && fullSet[i+3] == piece && fullSet[i+4] == "-"){ // check senario ---O-
-                        if(i < 14 && fullSet[i+5] == "-"){ // only choose this spot if the right is not blocked
+                        if(fullSet[i+5] == "-"){ // only choose this spot if the right is not blocked
                             this.freeSpace[1] = i+4;
                         } else {
                             this.freeSpace[1] = i+2;
                         } 
                         return true;
-                    } else if(i < 14 && fullSet[i] == "-" && fullSet[i+1] == "-" && fullSet[i+2] == "-" && fullSet[i+3] == "-" && fullSet[i+4] == piece && fullSet[i+5] == "-"){ // check senario ----O, making sure the right is not blocked
+                    } else if(fullSet[i] == "-" && fullSet[i+1] == "-" && fullSet[i+2] == "-" && fullSet[i+3] == "-" && fullSet[i+4] == piece && fullSet[i+5] == "-"){ // check senario ----O, making sure the right is not blocked
                         this.freeSpace[1] = i+3;
                         return true;
                     } 
@@ -1551,13 +1551,13 @@ class Pente implements PenteInterface{
                         }
                         return true;
                     } else if(fullSet[i] == "-" && fullSet[i+1] == "-" && fullSet[i+2] == "-" && fullSet[i+3] == piece && fullSet[i+4] == "-"){ // check senario ---O-
-                        if(i < 14 && fullSet[i+5] == "-"){ // only choose this spot if the right is not blocked
+                        if(fullSet[i+5] == "-"){ // only choose this spot if the right is not blocked
                             this.freeSpace[0] = i+4;
                         } else {
                             this.freeSpace[0] = i+2;
                         } 
                         return true;
-                    } else if(i < 14 && fullSet[i] == "-" && fullSet[i+1] == "-" && fullSet[i+2] == "-" && fullSet[i+3] == "-" && fullSet[i+4] == piece && fullSet[i+5] == "-"){ // check senario ----O, making sure the right is not blocked
+                    } else if(fullSet[i] == "-" && fullSet[i+1] == "-" && fullSet[i+2] == "-" && fullSet[i+3] == "-" && fullSet[i+4] == piece && fullSet[i+5] == "-"){ // check senario ----O, making sure the right is not blocked
                         this.freeSpace[0] = i+3;
                         return true;
                     }  
@@ -1600,7 +1600,7 @@ class Pente implements PenteInterface{
                         } 
                         return true;
                     } else if(fullSet[i] == "-" && fullSet[i+1] == "-" && fullSet[i+2] == "-" && fullSet[i+3] == piece && fullSet[i+4] == "-"){ // check senario ---O-
-                        if(fullSet[i+5] == "-" && i < 14){ // only choose this spot if the right is not blocked
+                        if(fullSet[i+5] == "-"){ // only choose this spot if the right is not blocked
                             this.freeSpace[0] = rowIdx+i+4;
                             this.freeSpace[1] = columnIdx+i+4;
                         } else {
@@ -1608,7 +1608,7 @@ class Pente implements PenteInterface{
                             this.freeSpace[1] = columnIdx+i+2;
                         }  
                         return true;
-                    } else if(i < 14 && fullSet[i] == "-" && fullSet[i+1] == "-" && fullSet[i+2] == "-" && fullSet[i+3] == "-" && fullSet[i+4] == piece && fullSet[i+5] == "-"){ // check senario ----O, making sure the right is not blocked
+                    } else if(fullSet[i] == "-" && fullSet[i+1] == "-" && fullSet[i+2] == "-" && fullSet[i+3] == "-" && fullSet[i+4] == piece && fullSet[i+5] == "-"){ // check senario ----O, making sure the right is not blocked
                         this.freeSpace[0] = rowIdx+i+3;
                         this.freeSpace[1] = columnIdx+i+3;
                         return true;
@@ -1660,7 +1660,7 @@ class Pente implements PenteInterface{
                             this.freeSpace[1] = columnIdx+i+2;
                         }
                         return true;
-                    } else if(i < 14 && fullSet[i] == "-" && fullSet[i+1] == "-" && fullSet[i+2] == "-" && fullSet[i+3] == "-" && fullSet[i+4] == piece && fullSet[i+5] == "-"){ // check senario ----O, making sure the right is not blocked
+                    } else if(fullSet[i] == "-" && fullSet[i+1] == "-" && fullSet[i+2] == "-" && fullSet[i+3] == "-" && fullSet[i+4] == piece && fullSet[i+5] == "-"){ // check senario ----O, making sure the right is not blocked
                         this.freeSpace[0] = rowIdx-(i-3);
                         this.freeSpace[1] = columnIdx+i+3;
                         return true;
@@ -1708,13 +1708,13 @@ class Pente implements PenteInterface{
             return true;
         } else if(row > 0 && row < 16 && column > 2 && column < 18 && this.board[row+3][column-3].equals("-") && this.board[row+2][column-2].equals("-") && this.board[row+1][column-1].equals("-") && this.board[row-1][column+1].equals("-")){ // diagonalDown: checking for three empty spots before and one empty spot after the piece
             return true;
-        } else if(row > 3 && this.board[row-4][column].equals("-") && this.board[row-3][column].equals("-") && this.board[row-2][column].equals("-") && this.board[row-1][column].equals("-")){ // row: checking for four empty spots after the piece
+        } else if(row > 3 && this.board[row-4][column].equals("-") && this.board[row-3][column].equals("-") && this.board[row-2][column].equals("-") && this.board[row-1][column].equals("-")){ // row: checking for four empty spots before the piece
             return true;
-        } else if(column > 3 && this.board[row][column-4].equals("-") && this.board[row][column-3].equals("-") && this.board[row][column-2].equals("-") && this.board[row][column-1].equals("-")){ // column: checking for four empty spots after the piece the piece
+        } else if(column > 3 && this.board[row][column-4].equals("-") && this.board[row][column-3].equals("-") && this.board[row][column-2].equals("-") && this.board[row][column-1].equals("-")){ // column: checking for four empty spots before the piece the piece
             return true;
-        } else if(row > 3 && column > 3 && this.board[row-4][column-4].equals("-") && this.board[row-3][column-3].equals("-") && this.board[row-2][column-2].equals("-") && this.board[row-1][column-1].equals("-")){ // diagonalUp: checking for four empty spots after the piece
+        } else if(row > 3 && column > 3 && this.board[row-4][column-4].equals("-") && this.board[row-3][column-3].equals("-") && this.board[row-2][column-2].equals("-") && this.board[row-1][column-1].equals("-")){ // diagonalUp: checking for four empty spots before the piece
             return true;
-        } else if(row < 15 && column > 3 && this.board[row+4][column-4].equals("-") && this.board[row+3][column-3].equals("-") && this.board[row+2][column-2].equals("-") && this.board[row+1][column-1].equals("-")){ // diagonalDown: checking for four empty spots after the piece
+        } else if(row < 15 && column > 3 && this.board[row+4][column-4].equals("-") && this.board[row+3][column-3].equals("-") && this.board[row+2][column-2].equals("-") && this.board[row+1][column-1].equals("-")){ // diagonalDown: checking for four empty spots before the piece
             return true;
         } else {
             return false;
