@@ -92,9 +92,9 @@ class Pente implements PenteInterface{
             // if the pieces are interrupted block within the interuption
             this.board[this.freeSpace[0]][this.freeSpace[1]] = "O";
             checkIfCaptured(this.freeSpace[0], this.freeSpace[1], "O");
-        } else if(computerHasThreeInARow()){
-            // check if the computer has three in a row
-	        // if not blocked, make four
+        } else if(computerCanMakeFourUnblockedInARow()){
+                // check if the computer has can make four unblocked in a row
+                // if so, make four
             this.board[this.freeSpace[0]][this.freeSpace[1]] = "O";
         } else if(playerHasThree()){
             // check if the opponent has three in a row with a blank space on either side
@@ -859,6 +859,214 @@ class Pente implements PenteInterface{
         }
     }
 
+    private boolean setOfThreeUnblockedInFive(String type, String piece){
+        String[] fullSet;
+        int rowIdx;
+        int columnIdx;
+        if(type == "row"){
+            for(int j = 0; j < 19; j++){
+                fullSet = getRow(j);
+                this.freeSpace[0] = j;
+
+                for(int i = 0; i < 14; i++){
+                    if(piece == "X" && i < fullSet.length-6 && fullSet[i] == "-" && fullSet[i+1] == piece && fullSet[i+2] == "-" && fullSet[i+3] == piece && fullSet[i+4] == "-" && fullSet[i+5] == piece && fullSet[i+6] == "-"){ // check senario -O-O-O-
+                        int[][] spots = {{this.freeSpace[0], i}, {this.freeSpace[0], i+2}, {this.freeSpace[0], i+4}, {this.freeSpace[0], i+6}};
+                        this.freeSpace = pickOptimalSpot(spots, "O");
+                        return true;
+                    } else if(i < fullSet.length-5 && fullSet[i] == "-" && fullSet[i+1] == "-" && fullSet[i+2] == piece && fullSet[i+3] == piece && fullSet[i+4] == piece && fullSet[i+5] == "-"){ // check senario --OOO-
+                        if(i == fullSet.length-6){
+                            this.freeSpace[1] = i+1;
+                        } else {
+                            int[][] spots = {{this.freeSpace[0], i+1}, {this.freeSpace[0], i+5}};
+                            this.freeSpace = pickOptimalSpot(spots, "O");
+                        }
+                        return true;
+                    } else if(i < fullSet.length-5 && fullSet[i] == "-" && fullSet[i+1] == piece && fullSet[i+2] == piece && fullSet[i+3] == piece && fullSet[i+4] == "-" && fullSet[i+5] == "-" ){ // check senario -OOO--
+                        if(i == 0){
+                            this.freeSpace[1] = i+4;
+                        } else {
+                            int[][] spots = {{this.freeSpace[0], i}, {this.freeSpace[0], i+4}};
+                            this.freeSpace = pickOptimalSpot(spots, "O"); 
+                        }
+                        return true;
+                    } else if(i < fullSet.length-5 && fullSet[i] == "-" && fullSet[i+1] == piece && fullSet[i+2] == "-" && fullSet[i+3] == piece && fullSet[i+4] == piece && fullSet[i+5] == "-"){ // check senario -O-OO-
+                        this.freeSpace[1] = i+2;
+                        return true;
+                    } else if(i < fullSet.length-5 && fullSet[i] == "-" && fullSet[i+1] == piece && fullSet[i+2] == piece && fullSet[i+3] == "-" && fullSet[i+4] == piece && fullSet[i+5] == "-"){ // check senario -OO-O-
+                        this.freeSpace[1] = i+3;
+                        return true;
+                    } else if(piece == "X" && i < fullSet.length-5 && fullSet[i] == piece && fullSet[i+1] == "-" && fullSet[i+2] == "-" && fullSet[i+3] == piece && fullSet[i+4] == piece && fullSet[i+5] == "-"){ // check senario O--OO-,
+                        int[][] spots = {{this.freeSpace[0], i+1}, {this.freeSpace[0], i+2}};
+                        this.freeSpace = pickOptimalSpot(spots, "O");
+                        return true;
+                    } else if(piece == "X" && i < fullSet.length-5 && fullSet[i] == "-" && fullSet[i+1] == piece && fullSet[i+2] == piece && fullSet[i+3] == "-" && fullSet[i+4] == "-" && fullSet[i+5] == piece){ // check senario -OO--O
+                        int[][] spots = {{this.freeSpace[0], i+3}, {this.freeSpace[0], i+4}};
+                        this.freeSpace = pickOptimalSpot(spots, "O");
+                        return true;
+                    } 
+                }
+            }
+            return false;
+        } else if(type == "column"){
+            for(int j = 0; j < 19; j++){
+                fullSet = getColumn(j);
+                this.freeSpace[1] = j;
+
+                for(int i = 0; i < 14; i++){
+                    if(piece == "X" && i < fullSet.length-6 && fullSet[i] == "-" && fullSet[i+1] == piece && fullSet[i+2] == "-" && fullSet[i+3] == piece && fullSet[i+4] == "-" && fullSet[i+5] == piece && fullSet[i+6] == "-"){ // check senario -O-O-O-
+                        int[][] spots = {{i, this.freeSpace[1]}, {i+2, this.freeSpace[1]}, {i+4, this.freeSpace[1]}, {i+6, this.freeSpace[1]}};
+                        this.freeSpace = pickOptimalSpot(spots, "O");
+                        return true;
+                    } else if(i < fullSet.length-5 && fullSet[i] == "-" && fullSet[i+1] == "-" && fullSet[i+2] == piece && fullSet[i+3] == piece && fullSet[i+4] == piece && fullSet[i+5] == "-"){ // check senario --OOO-
+                        if(i == fullSet.length-6){
+                            this.freeSpace[0] = i+1;
+                        } else {
+                            int[][] spots = {{i+1, this.freeSpace[1]}, {i+5, this.freeSpace[1]}};
+                            this.freeSpace = pickOptimalSpot(spots, "O");
+                        }
+                        return true;
+                    } else if(i < fullSet.length-5 && fullSet[i] == "-" && fullSet[i+1] == piece && fullSet[i+2] == piece && fullSet[i+3] == piece && fullSet[i+4] == "-" && fullSet[i+5] == "-" ){ // check senario -OOO--
+                        if(i == 0){
+                            this.freeSpace[0] = i+4;
+                        } else {
+                            int[][] spots = {{i, this.freeSpace[1]}, {i+4, this.freeSpace[1]}};
+                            this.freeSpace = pickOptimalSpot(spots, "O");
+                        }
+                        return true;
+                    } else if(i < fullSet.length-5 && fullSet[i] == "-" && fullSet[i+1] == piece && fullSet[i+2] == "-" && fullSet[i+3] == piece && fullSet[i+4] == piece && fullSet[i+5] == "-"){ // check senario -O-OO-
+                        this.freeSpace[0] = i+2;
+                        return true;
+                    } else if(i < fullSet.length-5 && fullSet[i] == "-" && fullSet[i+1] == piece && fullSet[i+2] == piece && fullSet[i+3] == "-" && fullSet[i+4] == piece && fullSet[i+5] == "-"){ // check senario -OO-O-
+                        this.freeSpace[0] = i+3;
+                        return true;
+                    } else if(piece == "X" && i < fullSet.length-5 && fullSet[i] == piece && fullSet[i+1] == "-" && fullSet[i+2] == "-" && fullSet[i+3] == piece && fullSet[i+4] == piece && fullSet[i+5] == "-"){ // check senario O--OO-
+                        int[][] spots = {{i+1, this.freeSpace[1]}, {i+2, this.freeSpace[1]}};
+                        this.freeSpace = pickOptimalSpot(spots, "O");
+                        return true;
+                    } else if(piece == "X" && i < fullSet.length-5 && fullSet[i] == "-" && fullSet[i+1] == piece && fullSet[i+2] == piece && fullSet[i+3] == "-" && fullSet[i+4] == "-" && fullSet[i+5] == piece){ // check senario -OO--O
+                        int[][] spots = {{i+3, this.freeSpace[1]}, {i+4, this.freeSpace[1]}};
+                        this.freeSpace = pickOptimalSpot(spots, "O");
+                        return true;
+                    } 
+                }
+            } 
+            return false;   
+        } else if(type == "diagonalDown"){ 
+            for(int j = 0; j < 30; j++){
+                fullSet = getDiagonalDown(j);
+            
+                if(j <= 14){
+                    rowIdx = 14-j;
+                    columnIdx = 0;
+                } else {
+                    rowIdx = 0;
+                    columnIdx = j-14;
+                }
+
+                for(int i = 0; i < fullSet.length-4; i++){ 
+                    if(piece == "X" && i < fullSet.length-6 && fullSet[i] == "-" && fullSet[i+1] == piece && fullSet[i+2] == "-" && fullSet[i+3] == piece && fullSet[i+4] == "-" && fullSet[i+5] == piece && fullSet[i+6] == "-"){ // check senario -O-O-O-
+                        int[][] spots = {{rowIdx+i, columnIdx+i}, {rowIdx+i+2, columnIdx+i+2}, {rowIdx+i+4, columnIdx+i+4}, {rowIdx+i+6, columnIdx+i+6}};
+                        this.freeSpace = pickOptimalSpot(spots, "O");
+                        return true;
+                    } else if(i < fullSet.length-5 && fullSet[i] == "-" && fullSet[i+1] == "-" && fullSet[i+2] == piece && fullSet[i+3] == piece && fullSet[i+4] == piece && fullSet[i+5] == "-"){ // check senario --OOO-
+                        if(i == fullSet.length-6){
+                            this.freeSpace[0] = rowIdx+i+1;
+                            this.freeSpace[1] = columnIdx+i+1;
+                        } else {
+                            int[][] spots = {{rowIdx+i+1, columnIdx+i+1}, {rowIdx+i+5, columnIdx+i+5}};
+                            this.freeSpace = pickOptimalSpot(spots, "O");
+                        }
+                        return true;
+                    } else if(i < fullSet.length-5 && fullSet[i] == "-" && fullSet[i+1] == piece && fullSet[i+2] == piece && fullSet[i+3] == piece && fullSet[i+4] == "-" && fullSet[i+5] == "-" ){ // check senario -OOO--
+                        if(i == 0){
+                            this.freeSpace[0] = rowIdx+i+4;
+                            this.freeSpace[1] = columnIdx+i+4;
+                        } else {
+                            int[][] spots = {{rowIdx+i, columnIdx+i}, {rowIdx+i+4, columnIdx+i+4}};
+                            this.freeSpace = pickOptimalSpot(spots, "O");
+                        }
+                        return true;
+                    } else if(i < fullSet.length-5 && fullSet[i] == "-" && fullSet[i+1] == piece && fullSet[i+2] == "-" && fullSet[i+3] == piece && fullSet[i+4] == piece && fullSet[i+5] == "-"){ // check senario -O-OO-
+                        this.freeSpace[0] = rowIdx+i+2;
+                        this.freeSpace[1] = columnIdx+i+2;
+                        return true;
+                    } else if(i < fullSet.length-5 && fullSet[i] == "-" && fullSet[i+1] == piece && fullSet[i+2] == piece && fullSet[i+3] == "-" && fullSet[i+4] == piece && fullSet[i+5] == "-"){ // check senario -OO-O-
+                        this.freeSpace[0] = rowIdx+i+3;
+                        this.freeSpace[1] = columnIdx+i+3;
+                        return true;
+                    } else if(piece == "X" && i < fullSet.length-5 && fullSet[i] == piece && fullSet[i+1] == "-" && fullSet[i+2] == "-" && fullSet[i+3] == piece && fullSet[i+4] == piece && fullSet[i+5] == "-"){ // check senario O--OO-
+                        int[][] spots = {{rowIdx+i+1, columnIdx+i+1}, {rowIdx+i+2, columnIdx+i+2}};
+                        this.freeSpace = pickOptimalSpot(spots, "O");
+                        return true;
+                    } else if(piece == "X" && i < fullSet.length-5 && fullSet[i] == "-" && fullSet[i+1] == piece && fullSet[i+2] == piece && fullSet[i+3] == "-" && fullSet[i+4] == "-" && fullSet[i+5] == piece){ // check senario -OO--O
+                        int[][] spots = {{rowIdx+i+3, columnIdx+i+3}, {rowIdx+i+4, columnIdx+i+4}};
+                        this.freeSpace = pickOptimalSpot(spots, "O");
+                        return true;
+                    } 
+                }
+            }
+            return false;
+        } else if(type == "diagonalUp"){
+            for(int j = 0; j < 30; j++){
+                fullSet = getDiagonalUp(j);
+            
+                if(j <= 14){
+                    rowIdx = j+4;
+                    columnIdx = 0;
+                } else {
+                    rowIdx = 18;
+                    columnIdx = j-14;
+                }
+
+                for(int i = 0; i < fullSet.length-4; i++){ 
+                    if(piece == "X" && i < fullSet.length-6 && fullSet[i] == "-" && fullSet[i+1] == piece && fullSet[i+2] == "-" && fullSet[i+3] == piece && fullSet[i+4] == "-" && fullSet[i+5] == piece && fullSet[i+6] == "-"){ // check senario -O-O-O-
+                        int[][] spots = {{rowIdx-i, columnIdx+i}, {rowIdx-(i+2), columnIdx+i+2}, {rowIdx-(i+4), columnIdx+i+4}, {rowIdx-(i+6), columnIdx+i+6}};
+                        this.freeSpace = pickOptimalSpot(spots, "O");
+                        return true;
+                    } else if(i < fullSet.length-5 && fullSet[i] == "-" && fullSet[i+1] == "-" && fullSet[i+2] == piece && fullSet[i+3] == piece && fullSet[i+4] == piece && fullSet[i+5] == "-"){ // check senario --OOO-
+                        if(i == fullSet.length-6){
+                            this.freeSpace[0] = rowIdx-(i+1);
+                            this.freeSpace[1] = columnIdx+i+1;
+                        } else {
+                            int[][] spots = {{rowIdx-(i+1), columnIdx+i+1}, {rowIdx-(i+5), columnIdx+i+5}};
+                            this.freeSpace = pickOptimalSpot(spots, "O");
+                        }
+                        return true;
+                    } else if(i < fullSet.length-5 && fullSet[i] == "-" && fullSet[i+1] == piece && fullSet[i+2] == piece && fullSet[i+3] == piece && fullSet[i+4] == "-" && fullSet[i+5] == "-" ){ // check senario -OOO--
+                        if(i == 0){
+                            this.freeSpace[0] = rowIdx-(i+4);
+                            this.freeSpace[1] = columnIdx+i+4;
+                        } else {
+                            int[][] spots = {{rowIdx-i, columnIdx+i}, {rowIdx-(i+4), columnIdx+i+4}};
+                            this.freeSpace = pickOptimalSpot(spots, "O");
+                        }
+                        return true;
+                    } else if(i < fullSet.length-5 && fullSet[i] == "-" && fullSet[i+1] == piece && fullSet[i+2] == "-" && fullSet[i+3] == piece && fullSet[i+4] == piece && fullSet[i+5] == "-"){ // check senario -O-OO-
+                        this.freeSpace[0] = rowIdx-(i+2);
+                        this.freeSpace[1] = columnIdx+i+2;
+                        return true;
+                    } else if(i < fullSet.length-5 && fullSet[i] == "-" && fullSet[i+1] == piece && fullSet[i+2] == piece && fullSet[i+3] == "-" && fullSet[i+4] == piece && fullSet[i+5] == "-"){ // check senario -OO-O-
+                        this.freeSpace[0] = rowIdx-(i+3);
+                        this.freeSpace[1] = columnIdx+i+3;
+                        return true;
+                    } else if(piece == "X" && i < fullSet.length-5 && fullSet[i] == piece && fullSet[i+1] == "-" && fullSet[i+2] == "-" && fullSet[i+3] == piece && fullSet[i+4] == piece && fullSet[i+5] == "-"){ // check senario O--OO-
+                        int[][] spots = {{rowIdx-(i+1), columnIdx+i+1}, {rowIdx-(i+2), columnIdx+i+2}};
+                        this.freeSpace = pickOptimalSpot(spots, "O");
+                        return true;
+                    } else if(piece == "X" && i < fullSet.length-5 && fullSet[i] == "-" && fullSet[i+1] == piece && fullSet[i+2] == piece && fullSet[i+3] == "-" && fullSet[i+4] == "-" && fullSet[i+5] == piece){ // check senario -OO--O
+                        int[][] spots = {{rowIdx-(i+3), columnIdx+i+3}, {rowIdx-(i+4), columnIdx+i+4}};
+                        this.freeSpace = pickOptimalSpot(spots, "O");
+                        return true;
+                    } 
+                }
+            }
+            return false;
+        } else {
+            return false;
+        }
+    }
+
+
     private int[] pickOptimalSpot(int[][] spots, String piece){
         int bestScore = score(spots[0], piece);
         int[] bestSpot = spots[0];
@@ -1005,14 +1213,16 @@ class Pente implements PenteInterface{
     }
     }
 
-    private boolean computerHasThreeInARow(){ 
-        if(findRowOfN(3, "O")){ // check for three "O" in a row with free space on both sides
+    private boolean computerCanMakeFourUnblockedInARow(){ 
+        // This checks the following cases
+        // --OOO-, -OOO--, -O-OO-, -OO-O-, O--OO-, -OO--O 
+        if(setOfThreeUnblockedInFive("row", "O")){
             return true;
-        } else if(findColumnOfN(3, "O")){
+        } else if(setOfThreeUnblockedInFive("column", "O")){
             return true;
-        } else if(findDiagonalDownOfN(3, "O")){
+        } else if(setOfThreeUnblockedInFive("diagonalDown", "O")){
             return true;
-        } else if(findDiagonalUpOfN(3, "O")){
+        } else if(setOfThreeUnblockedInFive("diagonalUp", "O")){
             return true;
         } else {
             return false;
