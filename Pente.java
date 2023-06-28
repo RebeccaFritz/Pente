@@ -101,6 +101,22 @@ class Pente implements PenteInterface{
             // if unblocked, block three
             this.board[this.freeSpace[0]][this.freeSpace[1]] = "O";
             checkIfCaptured(this.freeSpace[0], this.freeSpace[1], "O");
+        } else if(hasIntersectingTwos("O")){
+            /* checks scenarios as such:
+            * -O-O-
+            * -OO--
+            * -----
+            */
+            // create intersection
+            this.board[this.freeSpace[0]][this.freeSpace[1]] = "O";
+        } else if(hasIntersectingTwos("X")){
+            /* checks scenarios as such:
+            * -O-O-
+            * -OO--
+            * -----
+            */
+            // block intersection
+            this.board[this.freeSpace[0]][this.freeSpace[1]] = "O";
         } else if(playerCanCapture()){
             // block capture
             this.board[this.freeSpace[0]][this.freeSpace[1]] = "O";
@@ -111,10 +127,10 @@ class Pente implements PenteInterface{
             this.board[this.captivePieceOne[0]][this.captivePieceOne[1]] = "-";
             this.board[this.captivePieceTwo[0]][this.captivePieceTwo[1]] = "-";
             computerCaptures++;
-        } else if(computerHasThree()){
-            // check if the computer has three in a row
-	        // if not blocked, make four
-            this.board[this.freeSpace[0]][this.freeSpace[1]] = "O";
+        } else if(hasThreeInFive("O")){
+                // check if the computer has three in a set of five
+                // make four
+                this.board[this.freeSpace[0]][this.freeSpace[1]] = "O";
         } else if(computerHasTwo()){
             // check if the computer has two in a row
             // if not blocked, make three
@@ -128,29 +144,34 @@ class Pente implements PenteInterface{
             for(int i = 2; i < 18; i++){
                 for(int j = 2; j < 18; j++){
                     if(isEmptyFivebyFive(i, j)){
-                        this.board[i][j] = "O";
-                        break;
+                        this.freeSpace[0] = i;
+                        this.freeSpace[1] = j;
+                        this.board[this.freeSpace[0]][this.freeSpace[1]] = "O";
                     }
                 }
             }
+
             // if there is a space with 4 blank spaces around it then choose that space 
             for(int i = 0; i < 20; i++){
                 for(int j = 0; j < 20; j++){
                     if(isEmptySetOfFive(i, j)){
-                        this.board[i][j] = "O";
-                        break;
+                        this.freeSpace[0] = i;
+                        this.freeSpace[1] = j;
+                        this.board[this.freeSpace[0]][this.freeSpace[1]] = "O";
                     }
                 }
             }
             
             // otherwise choose a random empty space
-            int randomRow = random.nextInt(20);
-            int randomColumn = random.nextInt(20);
+            int randomRow = this.random.nextInt(20);
+            int randomColumn = this.random.nextInt(20);
             while(this.board[randomRow][randomColumn] != "-"){
-                randomRow = random.nextInt(20);
-                randomColumn = random.nextInt(20);
-            }
-            this.board[randomRow][randomColumn] = "O";
+                randomRow = this.random.nextInt(20);
+                randomColumn = this.random.nextInt(20);
+            }   
+            this.freeSpace[0] = randomRow;
+            this.freeSpace[1] = randomColumn;
+            this.board[this.freeSpace[0]][this.freeSpace[1]] = "O";
         }
     }
 
@@ -1337,6 +1358,168 @@ class Pente implements PenteInterface{
         }
     }
 
+    private boolean hasIntersectingTwos(String piece){
+        for(int i = 1; i < 18; i++){
+            for(int j = 1; j < 18; j++){
+                if(this.board[i][j] == "-"){
+                    if(i > 2 && j > 2 && nNorth(2, i, j, piece) && nNorthWest(2, i, j, piece)){
+                        this.freeSpace[0] = i;
+                        this.freeSpace[1] = j;
+                        return true;
+                    } else if(i > 2 && j < 16 && nNorth(2, i, j, piece) && nNorthEast(2, i, j, piece)){
+                        this.freeSpace[0] = i;
+                        this.freeSpace[1] = j;
+                        return true;
+                    } else if(i > 2 && j < 16 && nNorth(2, i, j, piece) && nEast(2, i, j, piece)){
+                        this.freeSpace[0] = i;
+                        this.freeSpace[1] = j;
+                        return true;
+                    } else if(i > 2 && j > 2 && nNorth(2, i, j, piece) && nWest(2, i, j, piece)){
+                        this.freeSpace[0] = i;
+                        this.freeSpace[1] = j;
+                        return true;
+                    } else if(i > 2 && i < 16 && j > 2 && nNorth(2, i, j, piece) && nSouthWest(2, i, j, piece)){
+                        this.freeSpace[0] = i;
+                        this.freeSpace[1] = j;
+                        return true;
+                    } else if(i > 2 && i < 16 && j < 16 && nNorth(2, i, j, piece) && nSouthEast(2, i, j, piece)){
+                        this.freeSpace[0] = i;
+                        this.freeSpace[1] = j;
+                        return true;
+                    } else if(i > 2 && i < 16 && j > 2 && nSouth(2, i, j, piece) && nNorthWest(2, i, j, piece)){
+                        this.freeSpace[0] = i;
+                        this.freeSpace[1] = j;
+                        return true;
+                    } else if(i > 2 && i < 16 && j < 16 && nSouth(2, i, j, piece) && nNorthEast(2, i, j, piece)){
+                        this.freeSpace[0] = i;
+                        this.freeSpace[1] = j;
+                        return true;
+                    } else if(i < 16 && j < 16 && nSouth(2, i, j, piece) && nEast(2, i, j, piece)){
+                        this.freeSpace[0] = i;
+                        this.freeSpace[1] = j;
+                        return true;
+                    } else if(i < 16 && j > 2 && nSouth(2, i, j, piece) && nWest(2, i, j, piece)){
+                        this.freeSpace[0] = i;
+                        this.freeSpace[1] = j;
+                        return true;
+                    } else if(i < 16 && j > 2 && nSouth(2, i, j, piece) && nSouthWest(2, i, j, piece)){
+                        this.freeSpace[0] = i;
+                        this.freeSpace[1] = j;
+                        return true;
+                    } else if(i < 16 && j < 16 && nSouth(2, i, j, piece) && nSouthEast(2, i, j, piece)){
+                        this.freeSpace[0] = i;
+                        this.freeSpace[1] = j;
+                        return true;
+                    } else if(i > 2 && j > 2 && j < 16 && nEast(2, i, j, piece) && nNorthWest(2, i, j, piece)){
+                        this.freeSpace[0] = i;
+                        this.freeSpace[1] = j;
+                        return true;
+                    } else if(i > 2 && j < 16 && nEast(2, i, j, piece) && nNorthEast(2, i, j, piece)){
+                        this.freeSpace[0] = i;
+                        this.freeSpace[1] = j;
+                        return true;
+                    } else if(i < 16 && j > 2 && j < 16 && nEast(2, i, j, piece) && nSouthWest(2, i, j, piece)){
+                        this.freeSpace[0] = i;
+                        this.freeSpace[1] = j;
+                        return true;
+                    } else if(i < 16 && j < 16 && nEast(2, i, j, piece) && nSouthEast(2, i, j, piece)){
+                        this.freeSpace[0] = i;
+                        this.freeSpace[1] = j;
+                        return true;
+                    } else if(i > 2 && j > 2 && nWest(2, i, j, piece) && nNorthWest(2, i, j, piece)){
+                        this.freeSpace[0] = i;
+                        this.freeSpace[1] = j;
+                        return true;
+                    } else if(i > 2 && j > 2 && j < 16 && nWest(2, i, j, piece) && nNorthEast(2, i, j, piece)){
+                        this.freeSpace[0] = i;
+                        this.freeSpace[1] = j;
+                        return true;
+                    } else if(i < 16 && j > 2 && nWest(2, i, j, piece) && nSouthWest(2, i, j, piece)){
+                        this.freeSpace[0] = i;
+                        this.freeSpace[1] = j;
+                        return true;
+                    } else if(i < 16 && j > 2 && j < 16 && nWest(2, i, j, piece) && nSouthEast(2, i, j, piece)){
+                        this.freeSpace[0] = i;
+                        this.freeSpace[1] = j;
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean nNorth(int n, int rowIdx, int columnIdx, String piece){
+        for(int i = 1; i <= n; i++){
+            if(this.board[rowIdx-i][columnIdx] != piece) return false;
+        }
+        if(this.board[rowIdx-(n+1)][columnIdx] != "-") return false;
+        
+        return true;
+    }
+
+    private boolean nSouth(int n, int rowIdx, int columnIdx, String piece){
+        for(int i = 1; i <= n; i++){
+            if(this.board[rowIdx+i][columnIdx] != piece) return false;
+        }
+        if(this.board[rowIdx+(n+1)][columnIdx] != "-") return false;
+        
+        return true;
+    }
+
+    private boolean nEast(int n, int rowIdx, int columnIdx, String piece){
+        for(int i = 1; i <= n; i++){
+            if(this.board[rowIdx][columnIdx+i] != piece) return false;
+        }
+        if(this.board[rowIdx][columnIdx+(n+1)] != "-") return false;
+        
+        return true;
+    }
+
+    private boolean nWest(int n, int rowIdx, int columnIdx, String piece){
+        for(int i = 1; i <= n; i++){
+            if(this.board[rowIdx][columnIdx-i] != piece) return false;
+        }
+        if(this.board[rowIdx][columnIdx-(n+1)] != "-") return false;
+        
+        return true;
+    }
+
+    private boolean nNorthEast(int n, int rowIdx, int columnIdx, String piece){
+        for(int i = 1; i <= n; i++){
+            if(this.board[rowIdx-i][columnIdx+i] != piece) return false;
+        }
+        if(this.board[rowIdx-(n+1)][columnIdx+(n+1)] != "-") return false;
+
+        return true;
+    }
+    
+    private boolean nNorthWest(int n, int rowIdx, int columnIdx, String piece){
+        for(int i = 1; i <= n; i++){
+            if(this.board[rowIdx-i][columnIdx-i] != piece) return false;
+        }
+        if(this.board[rowIdx-(n+1)][columnIdx-(n+1)] != "-") return false;
+        
+        return true;
+    }
+    
+    private boolean nSouthEast(int n, int rowIdx, int columnIdx, String piece){
+        for(int i = 1; i <= n; i++){
+            if(this.board[rowIdx+i][columnIdx+i] != piece) return false;
+        }
+        if(this.board[rowIdx+(n+1)][columnIdx+(n+1)] != "-") return false;
+        
+        return true;
+    }
+    
+    private boolean nSouthWest(int n, int rowIdx, int columnIdx, String piece){
+        for(int i = 1; i <= n; i++){
+            if(this.board[rowIdx+i][columnIdx-i] != piece) return false;
+        }
+        if(this.board[rowIdx+(n+1)][columnIdx-(n+1)] != "-") return false;
+        
+        return true;
+    }
 
     private int[] pickOptimalSpot(int[][] spots, String piece){
         int bestScore = score(spots[0], piece);
